@@ -20,10 +20,19 @@ export default class Login extends Component {
     event.preventDefault();
     const username = this.refs.username;
     const password = this.refs.password;
-    // this.props.login(username.value, password.value);
-    let queryParams = Querystring.parse(this.props.location.search.substring(1));
-    let redirectPath = queryParams.return_to;
-    this.props.redirectTo(redirectPath);
+    this.props.login(username.value, password.value);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.user && nextProps.user) {
+      console.log('login success');
+      let redirectPath = "/";
+      if (this.props.location.search != '') {
+        let queryParams = Querystring.parse(this.props.location.search.substring(1));
+        redirectPath = queryParams.return_to;
+      }
+      this.props.redirectTo(redirectPath);
+    }
   }
 
   render() {

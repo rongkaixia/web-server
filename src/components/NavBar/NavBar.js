@@ -16,13 +16,6 @@ export default class NavBar extends Component {
     logout: PropTypes.func.isRequired
   }
 
-  // constructor() {
-  //   super();
-  //   // this.setState({previousLocation: null});
-  //   this.previousLocation = null;
-  //   this.currentLocation = null;
-  // }
-
   handleLogout = (event) => {
     event.preventDefault();
     this.props.logout();
@@ -39,17 +32,11 @@ export default class NavBar extends Component {
   render() {
     const {user, location} = this.props; // eslint-disable-line no-shadow
     const styles = require('./NavBar.scss');
-    // const path = this.context.router.getCurrentPathname();
-    // const currentLocation = this.props.location.pathname;
     let returnTo = '';
     if (location.pathname != '/login') {
-      let redirectPath = location.pathname;
-      if (location.search != '') {
-        redirectPath = redirectPath + '?' + location.search;
-      }
+      let redirectPath = location.pathname + location.search;
       returnTo = '?' + Querystring.stringify({return_to: redirectPath});
     }
-    // const returnTo = Querystring.stringify({return_to: this.window.previousLocation.pathname});
     return (
       <Navbar fixedTop>
           <Navbar.Header>

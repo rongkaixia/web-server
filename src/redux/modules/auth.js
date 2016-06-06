@@ -28,7 +28,7 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         loading: false,
         loaded: true,
-        user: action.result
+        user: action.user
       };
     case LOAD_FAIL:
       return {
@@ -46,7 +46,7 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         loggingIn: false,
-        user: action.result,
+        user: action.user,
         loginError: false,
         loginErrorDesc: action.errorDescription
       };

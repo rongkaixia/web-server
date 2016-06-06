@@ -78,6 +78,7 @@ router.post(LOGIN_API_PATH, (req, res) => {
   	}else{
   		result = {...result, ...errorMsg, ...loginRes};
   	}
+    result.user = req.body.username;
   	console.log("send response: " + JSON.stringify(result));
   	res.cookie(Cookies.username, req.body.username);
   	res.cookie(Cookies.session, loginRes.token);
