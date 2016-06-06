@@ -1,0 +1,114 @@
+syntax = "proto3";
+
+enum MsgType{
+  MSG_TYPE_EMPTY = 0x00000000; // due to the bug of scalapbc, do not use EMPTY in your code
+
+  SIGNUP_REQUEST = 0x00000001;
+  LOGIN_REQUEST = 0x00000002;
+  AUTHENTICATION_REQUEST = 0x00000003;
+
+  SIGNUP_RESPONSE = 0x00010000;
+  LOGIN_RESPONSE = 0x00010001;
+  AUTHENTICATION_RESPONSE = 0x00010002;
+}
+
+enum LoginType{
+  LOGIN_TYPE_EMPTY = 0x00000000; // due to the bug of scalapbc, do not use EMPTY in your code
+
+  LOGIN_BY_USERNAME = 0x00000001;
+  LOGIN_BY_PHONENUM = 0x00000002;
+  LOGIN_BY_EMAIL = 0x00000003;
+
+  LOGIN_BY_WECHAT = 0x00000004;
+  LOGIN_BY_WEIBO = 0x00000005;
+}
+
+enum AuthType{
+  AUTH_TYPE_EMPTY = 0x00000000; // due to the bug of scalapbc, do not use EMPTY in your code
+
+  LOCAL = 0x00000001;
+  WECHAT = 0x00000002;
+  WEIBO = 0x00000003;
+}
+
+message Request{
+  oneof content {
+    SignupRequest signup_request = 1001;
+    LoginRequest login_request = 1002;
+    AuthenticationRequest authentication_request = 1003;
+  }
+
+  message SignupRequest{
+    string phonenum = 1;
+    string password = 2;
+  }
+
+  message LoginRequest{
+    oneof name{
+      string phonenum = 1;
+      string username = 2;
+      string email = 3;
+    }
+    string password = 10;
+  }
+
+  message AuthenticationRequest{
+    string token = 1;
+    // AuthType auth_name = 2;
+  }
+}
+
+enum ResultCode{
+  SUCCESS = 0;
+
+  INTERNAL_SERVER_ERROR = 10000;
+
+  REQUEST_RESOURCE_NOT_FOUND = 10001;
+  METHOD_NOT_ALLOW = 10002;
+  MESSAGE_TYPE_ERROR = 10003;
+  INVALID_MESSAGE = 10004;
+
+  SIGNUP_INVALID_PHONENUM = 20001;
+  SIGNUP_PHONENUM_ALREADY_EXISTED = 20002;
+  SIGNUP_INVALID_PASSWORD = 20003;
+
+  LOGIN_INVALID_USER = 30001;
+  LOGIN_INVALID_PASSWORD = 30002;
+
+  INVALID_TOKEN = 40001;
+}
+
+message Response{
+  ResultCode result = 1;
+  string error_description = 2;
+
+  oneof content {
+    SignupResponse signup_response = 1001;
+    LoginResponse login_response = 1002;
+    AuthenticationResponse authentication_response = 1003;
+  }
+  
+  message SignupResponse{
+  }
+
+  message LoginResponse{
+    string token = 1;
+    int32 expires_in = 2;
+    string user_id = 3;
+  }
+
+  message AuthenticationResponse{
+    bool is_expired = 1;
+    int32 expires_in = 2;
+    string user_id = 3;
+  }
+}
+
+message Message{
+  MsgType msg_type = 1; // useless for REST-ful API
+
+  oneof body{
+    Request request = 1001;
+    Response response = 1002;
+  }
+}
