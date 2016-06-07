@@ -1,5 +1,6 @@
 import superagent from 'superagent';
 import config from '../config';
+import ErrorMessage from '../error';
 const protocol = require('../../lib/protocol/com.echo.protocol_pb')
 
 const methods = ['get', 'post', 'put', 'patch', 'del'];
@@ -8,7 +9,8 @@ function formatUrl(path) {
   const adjustedPath = path[0] !== '/' ? '/' + path : path;
   if (__SERVER__) {
     // Prepend host and port of the API server to the path.
-    return 'http://' + config.apiHost + ':' + config.apiPort + adjustedPath;
+    console.log("sever");
+    return 'http://' + config.host + ':' + config.port + adjustedPath;
   }
   // Prepend `/api` to relative URL, to proxy to API server.
   // return '/api' + adjustedPath;
@@ -26,14 +28,22 @@ class CApiClient {
     methods.forEach((method) =>
       this[method] = (path, { params, data } = {}) => new Promise((resolve, reject) => {
         const request = superagent[method](formatUrl(path));
+        // request.set('Access-Control-Allow-Credentials', 'true');
+        // const request = superagent.agent()[method](formatUrl(path));
 
         if (params) {
           request.query(params);
         }
 
         if (__SERVER__ && req.get('cookie')) {
+          // console.log(req);
+          console.log("=========cookie========")
+          console.log(req.get('cookie'))
           request.set('cookie', req.get('cookie'));
         }
+        // else if (document && document.cookie) {
+        //   request.set('cookie', document.cookie);
+        // }
 
         if (data) {
           request.send(data);
