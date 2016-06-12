@@ -1,4 +1,5 @@
 import superagent from 'superagent';
+// import unirest from 'unirest';
 import config from '../config';
 import ErrorMessage from '../error';
 const protocol = require('../../lib/protocol/com.echo.protocol_pb')
@@ -28,6 +29,7 @@ class CApiClient {
     methods.forEach((method) =>
       this[method] = (path, { params, data } = {}) => new Promise((resolve, reject) => {
         const request = superagent[method](formatUrl(path));
+        // request.headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
         // request.set('Access-Control-Allow-Credentials', 'true');
         // const request = superagent.agent()[method](formatUrl(path));
 
@@ -50,6 +52,19 @@ class CApiClient {
         }
 
         // request.end((err, { body } = {}) => err ? reject(body || err) : resolve(body));
+        // unirest
+        // request.end(response => {
+        //   console.log(response.body);
+        //   let body = response.body;
+        //   console.log(typeof(body));
+        //   if (body && body.errorCode) {
+        //     console.log('reject');
+        //     reject(body);
+        //   }else {
+        //     resolve(body);
+        //   }
+        // })
+        // superagent
         request.end((err, { body } = {}) => {
           if (err) {
             console.log("ApiClient recieve error: " + err);

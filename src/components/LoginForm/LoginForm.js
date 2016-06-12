@@ -9,6 +9,7 @@ export default class Login extends Component {
     loginErrorDesc: PropTypes.object,
     login: PropTypes.func,
     logout: PropTypes.func,
+    load: PropTypes.func,
     redirectTo: PropTypes.func.isRequired
   };
 
@@ -21,6 +22,11 @@ export default class Login extends Component {
     const username = this.refs.username;
     const password = this.refs.password;
     this.props.login(username.value, password.value);
+  }
+
+  handleLoadAuth = (event) => {
+    event.preventDefault();
+    this.props.load();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -53,6 +59,8 @@ export default class Login extends Component {
             </div>
             <p>{loginError ? loginErrorDesc : ''}</p>
             <button className="btn btn-success" onClick={this.handleSubmit}><i className="fa fa-sign-in"/>{' '}Log In
+            </button>
+            <button className="btn btn-success" onClick={this.handleLoadAuth}><i className="fa fa-sign-in"/>{' '}LoadAuth
             </button>
           </form>
           <p>This will "log you in" as this user, storing the username in the session of the API server.</p>

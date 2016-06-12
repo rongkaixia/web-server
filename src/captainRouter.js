@@ -119,9 +119,9 @@ router.get(VALIDATE_TOKEN_API_PATH, (req, res) => {
       // TODO: clear cookies
     }else{
       result = {...result, ...errorMsg, ...loginRes};
-      res.cookie(Cookies.username, req.body.username);
-      res.cookie(Cookies.session, loginRes.token);
-      res.cookie(Cookies.loggedIn, true);
+      // res.cookie(Cookies.username, req.body.username);
+      // res.cookie(Cookies.session, loginRes.token);
+      // res.cookie(Cookies.loggedIn, true);
     }
     console.log("send response: " + JSON.stringify(result));
     res.json(result);
