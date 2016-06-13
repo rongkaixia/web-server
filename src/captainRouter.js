@@ -112,16 +112,21 @@ router.get(VALIDATE_TOKEN_API_PATH, (req, res) => {
   .then((response)=>{
     console.log("recieve response from Captain Server: " + JSON.stringify(response.toObject()))
     let errorMsg = new ErrorMessage(response.getResult(), response.getErrorDescription()).toObject();
-    let loginRes = response.getAuthenticationResponse().toObject();
+    let authRes = response.getAuthenticationResponse().toObject();
     let result = {};
     if (response.getResult() != protocol.ResultCode.SUCCESS){
       result = {...result, ...errorMsg};
       // TODO: clear cookies
+      res.clearCookie(Cookies.username);
+      res.clearCookie(Cookies.session);
+      res.cookie(Cookies.loggedIn, false);
     }else{
-      result = {...result, ...errorMsg, ...loginRes};
-      // res.cookie(Cookies.username, req.body.username);
-      // res.cookie(Cookies.session, loginRes.token);
-      // res.cookie(Cookies.loggedIn, true);
+      result = {...result, ...errorMsg, ...authRes};
+      if (authRes.isExpired == true) {
+        res.clearCookie(Cookies.username);
+        res.clearCookie(Cookies.session);
+        res.cookie(Cookies.loggedIn, false);
+      }
     }
     console.log("send response: " + JSON.stringify(result));
     res.json(result);
@@ -131,6 +136,9 @@ router.get(VALIDATE_TOKEN_API_PATH, (req, res) => {
     let errorMsg = new ErrorMessage(protocol.ResultCode.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR");
     console.log(errorMsg.toObject());
     // TODO: clear cookies
+    res.clearCookie(Cookies.username);
+    res.clearCookie(Cookies.session);
+    res.cookie(Cookies.loggedIn, false);
     res.json(errorMsg.toObject());
   })
 })
