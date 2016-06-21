@@ -25,6 +25,8 @@ class CaptainClient {
       request.setSignupRequest(req);
     }else if(type == this.authPath){
       request.setAuthenticationRequest(req);
+    }else if(type == this.logoutPath){
+      request.setLogoutRequest(req);
     }else{
       throw new Error("invalid request");
     }

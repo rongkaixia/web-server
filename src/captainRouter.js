@@ -8,9 +8,10 @@ import CookieParser from 'cookie-parser';
 const protocol = require('../lib/protocol/com.echo.protocol_pb')
 const captainClient = new CaptainClient();
 
-const SIGNUP_API_PATH = "/signup";
-const LOGIN_API_PATH = "/login";
-const VALIDATE_TOKEN_API_PATH = "/auth";
+const SIGNUP_API_PATH = '/signup';
+const LOGIN_API_PATH = '/login';
+const LOGOUT_API_PATH = '/logout';
+const VALIDATE_TOKEN_API_PATH = '/auth';
 
 function checkPassword(password){
 	return true
@@ -24,6 +25,17 @@ let router = Express.Router();
 router.use(BodyParser.json()); // for parsing application/json
 router.use(BodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 router.use(CookieParser())
+
+
+// clear cookie function
+let clearCookie = (req, res) => {
+  if (req.cookies && req.cookies[Cookies.username])
+    res.clearCookie(Cookies.username);
+  if (req.cookies && req.cookies[Cookies.session])
+    res.clearCookie(Cookies.session);
+  if (req.cookies && (req.cookies[Cookies.loggedIn] == 'true' || req.cookies[Cookies.loggedIn] == true))
+    res.cookie(Cookies.loggedIn, false);
+}
 
 router.post(SIGNUP_API_PATH, (req, res) => {
   console.log("handle signup request: " + req.body);
@@ -97,8 +109,6 @@ router.post(LOGIN_API_PATH, (req, res) => {
 
 router.get(VALIDATE_TOKEN_API_PATH, (req, res) => {
   console.log("handle validate token request: " + JSON.stringify(req.cookies));
-  console.log("handle validate token request: " + req.get('cookie'));
-  console.log("handle validate token request: " + req.get('cookies'));
   // check input
   
   // construct login request
@@ -117,15 +127,11 @@ router.get(VALIDATE_TOKEN_API_PATH, (req, res) => {
     if (response.getResult() != protocol.ResultCode.SUCCESS){
       result = {...result, ...errorMsg};
       // TODO: clear cookies
-      res.clearCookie(Cookies.username);
-      res.clearCookie(Cookies.session);
-      res.cookie(Cookies.loggedIn, false);
+      // clearCookie(req, res);
     }else{
       result = {...result, ...errorMsg, ...authRes};
       if (authRes.isExpired == true) {
-        res.clearCookie(Cookies.username);
-        res.clearCookie(Cookies.session);
-        res.cookie(Cookies.loggedIn, false);
+        clearCookie(req, res);
       }
     }
     console.log("send response: " + JSON.stringify(result));
@@ -136,9 +142,41 @@ router.get(VALIDATE_TOKEN_API_PATH, (req, res) => {
     let errorMsg = new ErrorMessage(protocol.ResultCode.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR");
     console.log(errorMsg.toObject());
     // TODO: clear cookies
-    res.clearCookie(Cookies.username);
-    res.clearCookie(Cookies.session);
-    res.cookie(Cookies.loggedIn, false);
+    // clearCookie(req, res);
+    res.json(errorMsg.toObject());
+  })
+})
+
+router.get(LOGOUT_API_PATH, (req, res) => {
+  console.log("handle logout request: " + JSON.stringify(req.cookies));
+  // check input
+  
+  // construct login request
+  let logoutReq = new protocol.Request.LogoutRequest();
+  logoutReq.setToken(req.cookies.user_session);
+  console.log("send request to Captain Server")
+  console.log("request: " + JSON.stringify(logoutReq.toObject()))
+
+  // send request to backend server
+  captainClient.post(LOGOUT_API_PATH, logoutReq)
+  .then((response)=>{
+    console.log("recieve response from Captain Server: " + JSON.stringify(response.toObject()))
+    let errorMsg = new ErrorMessage(response.getResult(), response.getErrorDescription()).toObject();
+    let logoutRes = response.getLogoutResponse().toObject();
+    let result = {};
+    if (response.getResult() != protocol.ResultCode.SUCCESS){
+      result = {...result, ...errorMsg};
+    }else{
+      result = {...result, ...errorMsg, ...logoutRes};
+      clearCookie(req, res);
+    }
+    console.log("send response: " + JSON.stringify(result));
+    res.json(result);
+  })
+  .catch(err => {
+    console.log("handle response from Captain Server error: " + err);
+    let errorMsg = new ErrorMessage(protocol.ResultCode.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR");
+    console.log(errorMsg.toObject());
     res.json(errorMsg.toObject());
   })
 })

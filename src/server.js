@@ -73,7 +73,7 @@ app.use((req, res) => {
     // hot module replacement is enabled in the development env
     webpackIsomorphicTools.refresh();
   }
-  const client = new ApiClient(req);
+  const client = new ApiClient(req, res);
   const history = createHistory(req.originalUrl);
 
   const store = createStore(history, client);

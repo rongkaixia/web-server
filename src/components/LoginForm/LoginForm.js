@@ -10,6 +10,7 @@ export default class Login extends Component {
     login: PropTypes.func,
     logout: PropTypes.func,
     load: PropTypes.func,
+    location: PropTypes.object,
     redirectTo: PropTypes.func.isRequired
   };
 
@@ -17,28 +18,29 @@ export default class Login extends Component {
     router: PropTypes.func.isRequired
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.user && nextProps.user) {
+      console.log('login success');
+      let redirectPath = '/';
+      if (this.props.location.search !== '') {
+        const queryParams = Querystring.parse(this.props.location.search.substring(1));
+        redirectPath = queryParams.return_to;
+      }
+      this.props.redirectTo(redirectPath);
+    }
+  }
+
   handleSubmit = (event) => {
     event.preventDefault();
     const username = this.refs.username;
     const password = this.refs.password;
     this.props.login(username.value, password.value);
+    password.value = '';
   }
 
   handleLoadAuth = (event) => {
     event.preventDefault();
     this.props.load();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.user && nextProps.user) {
-      console.log('login success');
-      let redirectPath = "/";
-      if (this.props.location.search != '') {
-        let queryParams = Querystring.parse(this.props.location.search.substring(1));
-        redirectPath = queryParams.return_to;
-      }
-      this.props.redirectTo(redirectPath);
-    }
   }
 
   render() {

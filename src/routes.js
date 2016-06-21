@@ -6,10 +6,11 @@ import {
     Chat,
     Home,
     Widgets,
-    About,
     Login,
     LoginSuccess,
     Signup,
+    UserCenter,
+    AccountInfo,
     Survey,
     NotFound,
   } from 'containers';
@@ -25,11 +26,7 @@ export default (store) => {
       cb();
     }
 
-    if (!isAuthLoaded(store.getState())) {
-      store.dispatch(loadAuth()).then(checkAuth);
-    } else {
-      checkAuth();
-    }
+    store.dispatch(loadAuth()).then(checkAuth);
   };
 
   /**
@@ -44,10 +41,13 @@ export default (store) => {
       <Route onEnter={requireLogin}>
         <Route path="chat" component={Chat}/>
         <Route path="loginSuccess" component={LoginSuccess}/>
+        <Route path="account">
+          <IndexRoute component={UserCenter}/>
+          <Route path="info" component={AccountInfo}/>
+        </Route>
       </Route>
 
       { /* Routes */ }
-      <Route path="about" component={About}/>
       <Route path="login" component={Login}/>
       <Route path="signup" component={Signup}/>
       <Route path="survey" component={Survey}/>

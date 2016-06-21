@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+// ./scalapbc-0.5.26/bin/scalapbc protocol/com.echo.protocol.proto --scala_out=./src/main/scala/
+// ../protoc-3.0.0-beta-3-osx-x86_64/protoc --js_out=import_style=commonjs,binary:. com.echo.protocol.proto
 enum MsgType{
   MSG_TYPE_EMPTY = 0x00000000; // due to the bug of scalapbc, do not use EMPTY in your code
 
@@ -36,6 +38,7 @@ message Request{
     SignupRequest signup_request = 1001;
     LoginRequest login_request = 1002;
     AuthenticationRequest authentication_request = 1003;
+    LogoutRequest logout_request = 1004;
   }
 
   message SignupRequest{
@@ -53,6 +56,11 @@ message Request{
   }
 
   message AuthenticationRequest{
+    string token = 1;
+    // AuthType auth_name = 2;
+  }
+
+  message LogoutRequest{
     string token = 1;
     // AuthType auth_name = 2;
   }
@@ -86,6 +94,7 @@ message Response{
     SignupResponse signup_response = 1001;
     LoginResponse login_response = 1002;
     AuthenticationResponse authentication_response = 1003;
+    LogoutResponse logout_response = 1004;
   }
   
   message SignupResponse{
@@ -101,6 +110,9 @@ message Response{
     bool is_expired = 1;
     int32 expires_in = 2;
     string user_id = 3;
+  }
+
+  message LogoutResponse{
   }
 }
 

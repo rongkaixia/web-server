@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 // import Nav from 'react-bootstrap/lib/Nav';
 // import NavItem from 'react-bootstrap/lib/NavItem';
 import Helmet from 'react-helmet';
-import { isLoaded as isInfoLoaded, load as loadInfo } from 'redux/modules/info';
+// import { isLoaded as isInfoLoaded, load as loadInfo } from 'redux/modules/info';
 import { isLoaded as isAuthLoaded, load as loadAuth, logout } from 'redux/modules/auth';
 import { InfoBar, NavBar } from 'components';
 import { routeActions } from 'react-router-redux';
@@ -58,13 +58,13 @@ export default class App extends Component {
   };
 
   render() {
-    const {user} = this.props;
+    const {user, logout} = this.props;
     const styles = require('./App.scss');
 
     return (
       <div className={styles.app}>
         <Helmet {...config.app.head}/>
-        <NavBar user={user} logout={this.props.logout}/>
+        <NavBar user={user} logout={logout}/>
 
         <div className={styles.appContent}>
           {this.props.children}

@@ -15,7 +15,7 @@ export default class Signup extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    const {signingUp, signupError, signupErrorDesc} = nextProps;
+    const {signingUp, signupError} = nextProps;
     if (!signingUp && !signupError) {
       console.log('signup success');
       // login

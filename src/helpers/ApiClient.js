@@ -10,7 +10,7 @@ function formatUrl(path) {
   const adjustedPath = path[0] !== '/' ? '/' + path : path;
   if (__SERVER__) {
     // Prepend host and port of the API server to the path.
-    console.log("sever");
+    console.log("api client sever");
     return 'http://' + config.host + ':' + config.port + adjustedPath;
   }
   // Prepend `/api` to relative URL, to proxy to API server.
@@ -25,9 +25,10 @@ function formatUrl(path) {
  * Remove it at your own risk.
  */
 class CApiClient {
-  constructor(req) {
+  constructor(req, res) { // express req and res
     methods.forEach((method) =>
-      this[method] = (path, { params, data } = {}) => new Promise((resolve, reject) => {
+      this[method] = (path, { params, data} = {}) => new Promise((resolve, reject) => {
+        console.log('ApiClient path: ' + path);
         const request = superagent[method](formatUrl(path));
         // request.headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
         // request.set('Access-Control-Allow-Credentials', 'true');
@@ -39,8 +40,8 @@ class CApiClient {
 
         if (__SERVER__ && req.get('cookie')) {
           // console.log(req);
-          console.log("=========cookie========")
-          console.log(req.get('cookie'))
+          // console.log("=========cookie========")
+          // console.log(req.get('cookie'))
           request.set('cookie', req.get('cookie'));
         }
         // else if (document && document.cookie) {
@@ -65,7 +66,13 @@ class CApiClient {
         //   }
         // })
         // superagent
-        request.end((err, { body } = {}) => {
+        request.end((err, response) => {
+          // console.log("__SERVER__ set-cookie: " + JSON.stringify(response));
+          if (__SERVER__ && response && response.get('set-cookie')) {
+            console.log("__SERVER__ set-cookie: " + response.get('set-cookie'));
+            res.set('set-cookie', response.get('set-cookie'));
+          }
+          let body = response.body;
           if (err) {
             console.log("ApiClient recieve error: " + err);
             let errorMsg = new ErrorMessage(protocol.ResultCode.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR");
