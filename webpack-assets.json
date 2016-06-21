@@ -1,6 +1,6 @@
 {
   "javascript": {
-    "main": "http://localhost:3001/dist/main-96875944d19813ab3c60.js"
+    "main": "http://localhost:3001/dist/main-503ff01aae0034b5bd7e.js"
   },
   "styles": {},
   "assets": {
@@ -98,6 +98,11 @@
     "./src/containers/Account/AccountInfo.scss": {
       "InfoPanel": "InfoPanel___rrnLI",
       "_style": ".InfoPanel___rrnLI {\n  float: left;\n  width: 100%;\n  padding-left: 30px;\n}\n"
+    },
+    "./src/containers/Account/AccountAddress.scss": {
+      "AddressPanel": "AddressPanel___31J0y",
+      "AddressCard": "AddressCard___2sRXQ",
+      "_style": ".AddressPanel___31J0y {\n  float: left;\n  width: 100%;\n  padding-left: 30px;\n}\n\n.AddressCard___2sRXQ {\n  width: 200px;\n  height: 180px;\n}\n"
     }
   }
 }

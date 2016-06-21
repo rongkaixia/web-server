@@ -28,7 +28,7 @@ export default class UserCenterLeftPanel extends Component {
                     <li><a href="/account">我的商城</a></li>
                     <li><a href="/account/info">个人信息</a></li>
                     <li><a href="#">修改密码</a></li>
-                    <li><a href="#">收货地址</a></li>
+                    <li><a href="/account/address">收货地址</a></li>
                     <li><a href="#">优惠券</a></li>
                   </ul>
                 </li>
