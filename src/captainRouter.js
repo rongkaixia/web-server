@@ -5,6 +5,7 @@ import CaptainClient from './helpers/CaptainClient';
 import ErrorMessage from './error';
 import Cookies from './cookies';
 import CookieParser from 'cookie-parser';
+import {validateCsrfToken, VALIDATE_RESULT} from 'utils/AuthenticityToken'
 const protocol = require('../lib/protocol/com.echo.protocol_pb')
 const captainClient = new CaptainClient();
 
@@ -113,7 +114,7 @@ router.get(VALIDATE_TOKEN_API_PATH, (req, res) => {
   
   // construct login request
   let authReq = new protocol.Request.AuthenticationRequest();
-  authReq.setToken(req.cookies.user_session);
+  authReq.setToken(req.cookies[Cookies.session]);
   console.log("send request to Captain Server")
   console.log("request: " + JSON.stringify(authReq.toObject()))
 
@@ -147,13 +148,30 @@ router.get(VALIDATE_TOKEN_API_PATH, (req, res) => {
   })
 })
 
-router.get(LOGOUT_API_PATH, (req, res) => {
+router.post(LOGOUT_API_PATH, (req, res) => {
   console.log("handle logout request: " + JSON.stringify(req.cookies));
+  // validate auth key
+  let authKey = req.body.authKey;
+  console.log("authKey: " + authKey);
+  let valid = validateCsrfToken(authKey);
+  if (valid == VALIDATE_RESULT.INVALID_TOKEN) {
+    console.log('invalid authenticity key');
+    let errorMsg = new ErrorMessage(-1, 'invalid authenticity key');
+    res.json(errorMsg.toObject());
+    return;
+  }
+  if (valid == VALIDATE_RESULT.TOKEN_EXPIRED) {
+    console.log('authenticity key expired');
+    let errorMsg = new ErrorMessage(-1, 'authenticity key expired');
+    res.json(errorMsg.toObject());
+    return;
+  }
+  console.log('authenticity key passed');
   // check input
   
   // construct login request
   let logoutReq = new protocol.Request.LogoutRequest();
-  logoutReq.setToken(req.cookies.user_session);
+  logoutReq.setToken(req.cookies[Cookies.session]);
   console.log("send request to Captain Server")
   console.log("request: " + JSON.stringify(logoutReq.toObject()))
 

@@ -20,6 +20,8 @@ import BodyParser from 'body-parser';
 import getRoutes from './routes';
 import captainRouter from './captainRouter';
 
+// console.log('Au=======');
+// console.log(Au);
 const protocol = require('../lib/protocol/com.echo.protocol_pb')
 
 const targetUrl = 'http://' + config.apiHost + ':' + config.apiPort;
@@ -65,6 +67,7 @@ proxy.on('error', (error, req, res) => {
   res.end(JSON.stringify(json));
 });
 
+// captain router, redirect request to captain server
 app.use(captainRouter);
 
 app.use((req, res) => {

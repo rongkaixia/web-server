@@ -12,6 +12,7 @@ import {
     UserCenter,
     AccountInfo,
     AccountAddress,
+    AccountCoupon,
     Survey,
     NotFound,
   } from 'containers';
@@ -46,6 +47,7 @@ export default (store) => {
           <IndexRoute component={UserCenter}/>
           <Route path="info" component={AccountInfo}/>
           <Route path="address" component={AccountAddress}/>
+          <Route path="coupon" component={AccountCoupon}/>
         </Route>
       </Route>
 

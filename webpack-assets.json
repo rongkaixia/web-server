@@ -1,6 +1,6 @@
 {
   "javascript": {
-    "main": "http://localhost:3001/dist/main-503ff01aae0034b5bd7e.js"
+    "main": "http://localhost:3001/dist/main-31ff5625110aa31c344f.js"
   },
   "styles": {},
   "assets": {
@@ -103,6 +103,10 @@
       "AddressPanel": "AddressPanel___31J0y",
       "AddressCard": "AddressCard___2sRXQ",
       "_style": ".AddressPanel___31J0y {\n  float: left;\n  width: 100%;\n  padding-left: 30px;\n}\n\n.AddressCard___2sRXQ {\n  width: 200px;\n  height: 180px;\n}\n"
+    },
+    "./src/containers/Account/AccountCoupon.scss": {
+      "CouponPanel": "CouponPanel___3EyZQ",
+      "_style": ".CouponPanel___3EyZQ {\n  float: left;\n  width: 100%;\n  padding-left: 30px;\n}\n"
     }
   }
 }

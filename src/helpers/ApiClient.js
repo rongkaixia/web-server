@@ -2,7 +2,7 @@ import superagent from 'superagent';
 // import unirest from 'unirest';
 import config from '../config';
 import ErrorMessage from '../error';
-const protocol = require('../../lib/protocol/com.echo.protocol_pb')
+const protocol = require('../../lib/protocol/com.echo.protocol_pb');
 
 const methods = ['get', 'post', 'put', 'patch', 'del'];
 

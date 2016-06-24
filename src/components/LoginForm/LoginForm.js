@@ -1,14 +1,17 @@
 import React, {Component, PropTypes} from 'react';
 import Helmet from 'react-helmet';
 import Querystring from 'querystring';
+import {generateCsrfToken} from 'utils/AuthenticityToken'
 
 export default class Login extends Component {
   static propTypes = {
     user: PropTypes.object,
+    login: PropTypes.func,
     loginError: PropTypes.object,
     loginErrorDesc: PropTypes.object,
-    login: PropTypes.func,
     logout: PropTypes.func,
+    logoutError: PropTypes.object,
+    logoutErrorDesc: PropTypes.object,
     load: PropTypes.func,
     location: PropTypes.object,
     redirectTo: PropTypes.func.isRequired
@@ -43,9 +46,17 @@ export default class Login extends Component {
     this.props.load();
   }
 
+  handleLogout = (event) => {
+    event.preventDefault();
+    const authKey = this.refs.authKey;
+    console.log("authKey: " + authKey.value);
+    this.props.logout(authKey.value);
+  }
+
   render() {
-    const {user, loginError, loginErrorDesc, logout} = this.props;
+    const {user, loginError, loginErrorDesc, logout, logoutError, logoutErrorDesc} = this.props;
     const styles = require('./LoginForm.scss');
+    const authKey = generateCsrfToken();
     return (
       <div className={styles.loginPage + ' container'}>
         <Helmet title="Login"/>
@@ -68,15 +79,23 @@ export default class Login extends Component {
           <p>This will "log you in" as this user, storing the username in the session of the API server.</p>
         </div>
         }
-        {user &&
+        {user && !logoutError &&
         <div>
           <p>You are currently logged in as {user.name}.</p>
-
           <div>
-            <button className="btn btn-danger" onClick={logout}><i className="fa fa-sign-out"/>{' '}Log Out</button>
+            <form>
+              <input name="utf8" ref="authKey" type="hidden" value={authKey} />
+            </form>
+            <button className="btn btn-danger" onClick={this.handleLogout}><i className="fa fa-sign-out"/>{' '}Log Out</button>
           </div>
         </div>
         }
+        {user && logoutError &&
+        <div>
+          <p>{logoutErrorDesc}</p>
+        </div>
+        }
+
       </div>
     );
   }

@@ -67,13 +67,16 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         loggingOut: false,
-        user: null
+        user: null,
+        logoutError: false,
+        logoutErrorDesc: action.errorDescription
       };
     case LOGOUT_FAIL:
       return {
         ...state,
         loggingOut: false,
-        logoutError: action.error
+        logoutError: action.errorCode,
+        logoutErrorDesc: action.errorDescription
       };
     case SIGNUP:
       return {
@@ -122,10 +125,14 @@ export function login(username, password) {
   };
 }
 
-export function logout() {
+export function logout(authKey) {
   return {
     types: [LOGOUT, LOGOUT_SUCCESS, LOGOUT_FAIL],
-    promise: (client) => client.get('/logout')
+    promise: (client) => client.post('/logout', {
+      data: {
+        authKey: authKey
+      }
+    })
   };
 }
 

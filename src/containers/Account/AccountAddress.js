@@ -18,60 +18,6 @@ const customStyles = {
   }
 };
 
-@connect(
-  state => ({user: state.auth.user})
-)
-class AddressModal extends Component{
-  static propTypes = {
-    user: PropTypes.object
-  };
-
-  state = {
-    modalIsOpen: false
-  };
-
-  openModal() {
-    console.log("openModal");
-    console.log("state: " + this.state.modalIsOpen);
-    this.setState({modalIsOpen: true});
-  }
-
-  afterOpenModal() {
-    // references are now sync'd and can be accessed.
-    console.log("afterOpenModal");
-    console.log("state: " + this.state.modalIsOpen);
-    this.refs.subtitle.style.color = '#f00';
-  }
-
-  closeModal() {
-    this.setState({modalIsOpen: false});
-  }
-
-  render() {
-    return (
-      <div>
-        <button onClick={this.openModal}>Open Modal</button>
-        <Modal
-          isOpen={this.state.modalIsOpen}
-          onAfterOpen={this.afterOpenModal}
-          onRequestClose={this.closeModal}
-          style={customStyles} >
-
-          <h2 ref="subtitle">Hello</h2>
-          <button onClick={this.closeModal}>close</button>
-          <div>I am a modal</div>
-          <form>
-            <input />
-            <button>tab navigation</button>
-            <button>stays</button>
-            <button>inside</button>
-            <button>the modal</button>
-          </form>
-        </Modal>
-      </div>
-    );
-  }
-}
 /* eslint-disable */ 
 @connect((state => ({user: state.auth.user})),
         {redirectTo: routeActions.push})
@@ -97,7 +43,7 @@ export default class AccountAddress extends Component {
     event.preventDefault();
     console.log("afterOpenModal");
     console.log("state: " + this.state.modalIsOpen);
-    this.refs.subtitle.style.color = '#f00';
+    // this.refs.subtitle.style.color = '#f00';
   }
 
   closeModal = (event) => {
@@ -145,15 +91,15 @@ export default class AccountAddress extends Component {
             <h4 ref="subtitle">添加收货地址 <button style={{float: 'right'}} onClick={this.closeModal}>X</button></h4>
           </div>
           <form className="login-form form-horizontal">
-            <div className="form-group form-inline">
+            <div className="form-group">
               收件人
               <input type="text" ref="recipientName" placeholder="长度不超过12个字" className="form-control"/>
             </div>
-            <div className="form-group form-inline">
+            <div className="form-group">
               电话
               <input type="text" ref="recipientPhone" placeholder="请输入11位手机号码" className="form-control"/>
             </div>
-            <div className="form-group form-inline">
+            <div className="form-group">
               地址
               <textarea name="Text1" ref="recipientAddress" cols="40" rows="5" placeholder="请输入收货地址" className="form-control">
               </textarea>

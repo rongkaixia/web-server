@@ -33,6 +33,11 @@ export default class UserCenter extends Component {
   //   // username.value = '';
   //   password.value = '';
   // }
+  redirectToAccountInfo = (event) => {
+    event.preventDefault();
+    this.props.redirectTo('account/info');
+  }
+
   renderUserInfoPanel() {
     const {user} = this.props;
     const styles = require('./UserCenter.scss');
@@ -60,7 +65,7 @@ export default class UserCenter extends Component {
               {!user.email &&
               <li>
                 绑定邮箱：未绑定
-                <button className="btn btn-warning btn-sm">立即绑定</button>
+                <button className="btn btn-warning btn-sm" onClick={this.redirectToAccountInfo}>立即绑定</button>
               </li>
               }
               {user.phone &&
@@ -71,7 +76,7 @@ export default class UserCenter extends Component {
               {!user.phone &&
               <li>
                 绑定手机号：未绑定
-                <button className="btn btn-warning btn-sm">立即绑定</button>
+                <button className="btn btn-warning btn-sm" onClick={this.redirectToAccountInfo}>立即绑定</button>
               </li>
               }
             </ul>

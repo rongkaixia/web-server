@@ -6,6 +6,7 @@ export UserCenter from './UserCenter/UserCenter';
 export UserCenterLeftPanel from './UserCenterLeftPanel/UserCenterLeftPanel';
 export AccountInfo from './Account/AccountInfo';
 export AccountAddress from './Account/AccountAddress';
+export AccountCoupon from './Account/AccountCoupon';
 export Login from './Login/Login';
 export LoginSuccess from './LoginSuccess/LoginSuccess';
 export Signup from './Signup/Signup';

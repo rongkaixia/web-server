@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
+import {generateCsrfToken} from 'utils/AuthenticityToken'
 import * as authActions from 'redux/modules/auth';
 
 @connect(
@@ -12,8 +13,16 @@ class LoginSuccess extends Component {
     logout: PropTypes.func
   }
 
+  handleLogout = (event) => {
+    event.preventDefault();
+    const authKey = this.ref.authKey;
+    console.log("authKey: " + authKey);
+    // this.props.logout();
+  }
+
   render() {
     const {user, logout} = this.props;
+    const authKey = generateCsrfToken();
     return (user &&
       <div className="container">
         <h1>Login Success</h1>
@@ -29,7 +38,10 @@ class LoginSuccess extends Component {
           </p>
 
           <div>
-            <button className="btn btn-danger" onClick={logout}><i className="fa fa-sign-out"/>{' '}Log Out</button>
+            <form>
+              <input name="utf8" ref="authKey" type="hidden" value={authKey} />
+            </form>
+            <button className="btn btn-danger" onClick={this.handleLogout}><i className="fa fa-sign-out"/>{' '}Log Out</button>
           </div>
         </div>
       </div>
