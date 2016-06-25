@@ -113,13 +113,14 @@ export function load() {
   };
 }
 
-export function login(username, password) {
+export function login(username, password, authKey) {
   return {
     types: [LOGIN, LOGIN_SUCCESS, LOGIN_FAIL],
     promise: (client) => client.post('/login', {
       data: {
         username: username,
-        password: password
+        password: password,
+        authKey: authKey
       }
     })
   };

@@ -37,7 +37,8 @@ export default class Login extends Component {
     event.preventDefault();
     const username = this.refs.username;
     const password = this.refs.password;
-    this.props.login(username.value, password.value);
+    const authKey = this.refs.authKey;
+    this.props.login(username.value, password.value, authKey.value);
     password.value = '';
   }
 
@@ -61,6 +62,9 @@ export default class Login extends Component {
       <div className={styles.loginPage + ' container'}>
         <Helmet title="Login"/>
         <h1>Login</h1>
+        <form>
+          <input name="utf8" ref="authKey" type="hidden" value={authKey} />
+        </form>
         {!user &&
         <div>
           <form className="login-form form-horizontal" onSubmit={this.handleSubmit}>
@@ -83,9 +87,6 @@ export default class Login extends Component {
         <div>
           <p>You are currently logged in as {user.name}.</p>
           <div>
-            <form>
-              <input name="utf8" ref="authKey" type="hidden" value={authKey} />
-            </form>
             <button className="btn btn-danger" onClick={this.handleLogout}><i className="fa fa-sign-out"/>{' '}Log Out</button>
           </div>
         </div>

@@ -19,6 +19,7 @@ import {Provider} from 'react-redux';
 import BodyParser from 'body-parser';
 import getRoutes from './routes';
 import captainRouter from './captainRouter';
+import {generateCsrfToken} from 'utils/AuthenticityToken'
 
 // console.log('Au=======');
 // console.log(Au);
@@ -39,11 +40,11 @@ app.use(favicon(path.join(__dirname, '..', 'static', 'favicon.ico')));
 app.use(Express.static(path.join(__dirname, '..', 'static')));
 
 // Proxy to API server
-app.use('/api', (req, res) => {
-  res.cookie('name', 'tobi', { domain: '.example.com', path: '/admin', secure: true });
-  res.end("success")
-  // proxy.web(req, res, {target: targetUrl});
-});
+// app.use('/api', (req, res) => {
+//   res.cookie('name', 'tobi', { domain: '.example.com', path: '/admin', secure: true });
+//   res.end("success")
+//   proxy.web(req, res, {target: targetUrl});
+// });
 
 app.use('/ws', (req, res) => {
   proxy.web(req, res, {target: targetUrl + '/ws'});
@@ -66,6 +67,14 @@ proxy.on('error', (error, req, res) => {
   json = {error: 'proxy_error', reason: error.message};
   res.end(JSON.stringify(json));
 });
+
+// get form authenticity token
+app.get('/api/form_token', (req, res) => {
+  console.log("==============/api/form_token===========");
+  let token = generateCsrfToken();
+  let result = {value: token};
+  res.json(result);
+})
 
 // captain router, redirect request to captain server
 app.use(captainRouter);

@@ -1,7 +1,7 @@
 let jwt = require('jsonwebtoken');
 
 // Authenticity Token expire time, seconds
-const TIME_LIMIT = 30;
+const TIME_LIMIT = 2 * 24 * 3600;
 const SECRET_KEY = '7trRhA482C4Nrs0R7UxMwXl2HnVyEHd9';
 const VALIDATE_RESULT = {SUCCESS: 'SUCCESS', INVALID_TOKEN: 'INVALID_TOKEN', TOKEN_EXPIRED: 'TOKEN_EXPIRED'};
 const PADDING = '##<IDS'
