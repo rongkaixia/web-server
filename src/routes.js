@@ -8,6 +8,7 @@ import {
     Widgets,
     Login,
     LoginSuccess,
+    Logout,
     Signup,
     UserCenter,
     AccountInfo,
@@ -28,7 +29,27 @@ export default (store) => {
       cb();
     }
 
-    store.dispatch(loadAuth()).then(checkAuth);
+    if (!isAuthLoaded(store.getState())) {
+      store.dispatch(loadAuth()).then(checkAuth);
+    } else {
+      checkAuth();
+    }
+  };
+  const requireNotLogin = (nextState, replace, cb) => {
+    function checkAuth() {
+      const { auth: { user }} = store.getState();
+      if (user) {
+        // oops, not logged in, so can't be here!
+        replace('/');
+      }
+      cb();
+    }
+
+    if (!isAuthLoaded(store.getState())) {
+      store.dispatch(loadAuth()).then(checkAuth);
+    } else {
+      checkAuth();
+    }
   };
 
   /**
@@ -43,6 +64,7 @@ export default (store) => {
       <Route onEnter={requireLogin}>
         <Route path="chat" component={Chat}/>
         <Route path="loginSuccess" component={LoginSuccess}/>
+        <Route path="logout" component={Logout}/>
         <Route path="account">
           <IndexRoute component={UserCenter}/>
           <Route path="info" component={AccountInfo}/>
@@ -52,7 +74,9 @@ export default (store) => {
       </Route>
 
       { /* Routes */ }
-      <Route path="login" component={Login}/>
+      <Route onEnter={requireNotLogin}>
+        <Route path="login" component={Login}/>
+      </Route>
       <Route path="signup" component={Signup}/>
       <Route path="survey" component={Survey}/>
       <Route path="widgets" component={Widgets}/>

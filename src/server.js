@@ -68,14 +68,6 @@ proxy.on('error', (error, req, res) => {
   res.end(JSON.stringify(json));
 });
 
-// get form authenticity token
-app.get('/api/form_token', (req, res) => {
-  console.log("==============/api/form_token===========");
-  let token = generateCsrfToken();
-  let result = {value: token};
-  res.json(result);
-})
-
 // captain router, redirect request to captain server
 app.use(captainRouter);
 
@@ -112,7 +104,7 @@ app.use((req, res) => {
       loadOnServer({...renderProps, store, helpers: {client}}).then(() => {
           const component = (
           <Provider store={store} key="provider">
-            <RouterContext {...renderProps} />
+            <ReduxAsyncConnect {...renderProps} />
           </Provider>
         );
 

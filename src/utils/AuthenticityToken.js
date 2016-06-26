@@ -8,38 +8,48 @@ const PADDING = '##<IDS'
 
 // export VALIDATE_RESULT
 // define csrf token function
-function generateCsrfToken() {
+function generateCsrfToken(playload) {
   let randomNum = jwt.sign(Math.random(), SECRET_KEY);
-  let playload = {random: randomNum};
+  let playloadExt = Object.assign(playload, {random: randomNum});
   if (TIME_LIMIT) {
-    Object.assign(playload, {expires: new Date(Date.now() + TIME_LIMIT * 1000).getTime()});
+    Object.assign(playloadExt, {expires: new Date(Date.now() + TIME_LIMIT * 1000).getTime()});
   }
-  console.log('generateCsrfToken playload: ' + playload);
-  let token = jwt.sign(playload, SECRET_KEY);
+  console.log('generateCsrfToken playloadExt: ' + JSON.stringify(playloadExt));
+  let token = jwt.sign(playloadExt, SECRET_KEY, {noTimestamp: true});
   console.log('generateCsrfToken token: ' + token);
   return randomNum + PADDING + token;
 }
 
-function validateCsrfToken(authKey) {
+function validateCsrfToken(authKey, playload) {
   try {
     let data = authKey.split(PADDING);
     let randomNum = data[0];
     let token = data[1];
-    let playload = jwt.verify(token, SECRET_KEY);
-    if (!playload.random || playload.random !== randomNum) {
+    let playloadExt = jwt.verify(token, SECRET_KEY);
+    if (!playloadExt.random || playloadExt.random !== randomNum) {
       return VALIDATE_RESULT.INVALID_TOKEN;
     }
-    if (TIME_LIMIT) {
+    let checkVal = Object.assign(playload, {random: randomNum});
+    // check expire auth key
+    if (TIME_LIMIT && playloadExt.expires) {
       let currentTime = Date.now();
-      let expires = playload.expires;
-      console.log('currentTime: ' + currentTime);
-      console.log('expires: ' + expires);
+      let expires = playloadExt.expires;
       if (expires < currentTime) {
         return VALIDATE_RESULT.TOKEN_EXPIRED;
       }
+      Object.assign(checkVal, {expires: expires});
+    }
+    console.log('validateCsrfToken checkVal: ' + JSON.stringify(checkVal));
+    let tmp = jwt.sign(checkVal, SECRET_KEY, {noTimestamp: true});
+    console.log('validateCsrfToken signKey: ' + tmp);
+    console.log('validateCsrfToken expected token: ' + token);
+    // validate auth key
+    if (jwt.sign(checkVal, SECRET_KEY, {noTimestamp: true}) !== token) {
+      return VALIDATE_RESULT.INVALID_TOKEN;
     }
     return VALIDATE_RESULT.SUCCESS;
   } catch (error) {
+    console.log('validateCsrfToken error: ' + error);
     return VALIDATE_RESULT.INVALID_TOKEN;
   }
 }

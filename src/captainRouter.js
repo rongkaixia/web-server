@@ -5,7 +5,7 @@ import CaptainClient from './helpers/CaptainClient';
 import ErrorMessage from './error';
 import Cookies from './cookies';
 import CookieParser from 'cookie-parser';
-import {validateCsrfToken, VALIDATE_RESULT} from 'utils/AuthenticityToken';
+import { generateCsrfToken, validateCsrfToken, VALIDATE_RESULT } from 'utils/AuthenticityToken';
 import FormAuthenticator from 'middleware/FormAuthenticator';
 const protocol = require('../lib/protocol/com.echo.protocol_pb');
 const captainClient = new CaptainClient();
@@ -27,9 +27,22 @@ let router = Express.Router();
 router.use(BodyParser.json()); // for parsing application/json
 router.use(BodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 router.use(CookieParser())
-// router.post(FormAuthenticator); // FormAuthenticator middleware
 
+// FormAuthenticator middleware
 router.post('*', FormAuthenticator);
+
+// get form authenticity token
+router.get('/api/form_token', (req, res) => {
+  console.log("==============/api/form_token===========");
+  let playload = {};
+  if (req && req.cookies && req.cookies[Cookies.session]) {
+    playload[Cookies.session] = req.cookies[Cookies.session];
+  }
+  console.log("/api/form_token::playload: " + JSON.stringify(playload));
+  let token = generateCsrfToken(playload);
+  let result = {data: token};
+  res.json(result);
+})
 
 // clear cookie function
 let clearCookie = (req, res) => {

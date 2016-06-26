@@ -4,6 +4,7 @@ import BodyParser from 'body-parser';
 import ErrorMessage from '../error';
 import CookieParser from 'cookie-parser';
 import {validateCsrfToken, VALIDATE_RESULT} from 'utils/AuthenticityToken'
+import Cookies from '../cookies';
 const protocol = require('../../lib/protocol/com.echo.protocol_pb')
 
 let router = Express.Router();
@@ -12,7 +13,8 @@ router.use(BodyParser.urlencoded({ extended: true })); // for parsing applicatio
 router.use(CookieParser())
 
 export default function FormAuthenticator(req, res, next) {
-  // validate auth key
+  // get auth key
+  console.log("FormAuthenticator");
   let authKey = req.body.authKey;
   if (!authKey) {
   	let errorMsg = new ErrorMessage(protocol.ResultCode.INVALID_FROM_TOKEN, 'invalid authenticity key');
@@ -20,7 +22,13 @@ export default function FormAuthenticator(req, res, next) {
     return;
   }
   console.log("authKey: " + authKey);
-  let valid = validateCsrfToken(authKey);
+
+  // get user session
+  let playload = {};
+  if (req && req.cookies && req.cookies[Cookies.session]) {
+    playload[Cookies.session] = req.cookies[Cookies.session];
+  }
+  let valid = validateCsrfToken(authKey, playload);
   if (valid == VALIDATE_RESULT.INVALID_TOKEN) {
     console.log('invalid authenticity key');
   	let errorMsg = new ErrorMessage(protocol.ResultCode.INVALID_FROM_TOKEN, 'invalid authenticity key');

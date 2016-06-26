@@ -59,11 +59,13 @@ export default function reducer(state = initialState, action = {}) {
         loginErrorDesc: action.errorDescription
       };
     case LOGOUT:
+      console.log("auth: LOGOUT");
       return {
         ...state,
         loggingOut: true
       };
     case LOGOUT_SUCCESS:
+      console.log("auth: LOGOUT_SUCCESS");
       return {
         ...state,
         loggingOut: false,
@@ -137,14 +139,15 @@ export function logout(authKey) {
   };
 }
 
-export function signup(username, password) {
+export function signup(username, password, authKey) {
   return {
     types: [SIGNUP, SIGNUP_SUCCESS, SIGNUP_FAIL],
     promise: (client) => client.post('/signup', {
       // authenticity_token
       data: {
         username: username,
-        password: password
+        password: password,
+        authKey: authKey
       }
     })
   };

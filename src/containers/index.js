@@ -9,6 +9,7 @@ export AccountAddress from './Account/AccountAddress';
 export AccountCoupon from './Account/AccountCoupon';
 export Login from './Login/Login';
 export LoginSuccess from './LoginSuccess/LoginSuccess';
+export Logout from './Logout/Logout';
 export Signup from './Signup/Signup';
 export Survey from './Survey/Survey';
 export NotFound from './NotFound/NotFound';

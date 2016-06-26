@@ -28,8 +28,11 @@ class CApiClient {
   constructor(req, res) { // express req and res
     methods.forEach((method) =>
       this[method] = (path, { params, data} = {}) => new Promise((resolve, reject) => {
-        console.log('ApiClient path: ' + path);
         const request = superagent[method](formatUrl(path));
+        console.log('ApiClient path: ' + path);
+        if (!__SERVER__) {
+          console.log('request cookie: ' + document.cookie);
+        }
         // request.headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
         // request.set('Access-Control-Allow-Credentials', 'true');
         // const request = superagent.agent()[method](formatUrl(path));
@@ -38,7 +41,7 @@ class CApiClient {
           request.query(params);
         }
 
-        if (__SERVER__ && req.get('cookie')) {
+        if (__SERVER__ && req && req.get('cookie')) {
           // console.log(req);
           // console.log("=========cookie========")
           // console.log(req.get('cookie'))
@@ -68,7 +71,7 @@ class CApiClient {
         // superagent
         request.end((err, response) => {
           // console.log("__SERVER__ set-cookie: " + JSON.stringify(response));
-          if (__SERVER__ && response && response.get('set-cookie')) {
+          if (__SERVER__ && response && response.get('set-cookie') && res) {
             console.log("__SERVER__ set-cookie: " + response.get('set-cookie'));
             res.set('set-cookie', response.get('set-cookie'));
           }
@@ -81,6 +84,7 @@ class CApiClient {
           if (body && body.errorCode) {
             reject(body);
           }else {
+            console.log("request end");
             resolve(body);
           }
         })
