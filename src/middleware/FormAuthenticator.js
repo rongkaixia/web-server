@@ -1,9 +1,9 @@
 
 import Express from 'express';
 import BodyParser from 'body-parser';
-import ErrorMessage from '../error';
 import CookieParser from 'cookie-parser';
 import {validateCsrfToken, VALIDATE_RESULT} from 'utils/AuthenticityToken'
+import ErrorMessage from '../error';
 import Cookies from '../cookies';
 const protocol = require('../../lib/protocol/com.echo.protocol_pb')
 

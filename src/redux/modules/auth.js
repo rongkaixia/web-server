@@ -28,7 +28,7 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         loading: false,
         loaded: true,
-        user: action.userId ? {name: action.userId} : null
+        user: action.userId ? {id: action.userId, name: action.username} : null
       };
     case LOAD_FAIL:
       return {
@@ -46,7 +46,7 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         loggingIn: false,
-        user: {name: action.userId},
+        user: {id: action.userId, name: action.username},
         loginError: false,
         loginErrorDesc: action.errorDescription
       };
@@ -59,13 +59,11 @@ export default function reducer(state = initialState, action = {}) {
         loginErrorDesc: action.errorDescription
       };
     case LOGOUT:
-      console.log("auth: LOGOUT");
       return {
         ...state,
         loggingOut: true
       };
     case LOGOUT_SUCCESS:
-      console.log("auth: LOGOUT_SUCCESS");
       return {
         ...state,
         loggingOut: false,

@@ -14,6 +14,7 @@ const SIGNUP_API_PATH = '/signup';
 const LOGIN_API_PATH = '/login';
 const LOGOUT_API_PATH = '/logout';
 const VALIDATE_TOKEN_API_PATH = '/auth';
+const USER_INFO_API_PATH = '/user/info';
 
 function checkPassword(password){
 	return true
@@ -50,6 +51,8 @@ let clearCookie = (req, res) => {
     res.clearCookie(Cookies.username);
   if (req.cookies && req.cookies[Cookies.session])
     res.clearCookie(Cookies.session);
+  if (req.cookies && req.cookies[Cookies.userID])
+    res.clearCookie(Cookies.userID);
   if (req.cookies && (req.cookies[Cookies.loggedIn] == 'true' || req.cookies[Cookies.loggedIn] == true))
     res.cookie(Cookies.loggedIn, false);
 }
@@ -109,8 +112,9 @@ router.post(LOGIN_API_PATH, (req, res) => {
 			result = {...result, ...errorMsg};
   	}else{
   		result = {...result, ...errorMsg, ...loginRes};
-      res.cookie(Cookies.username, req.body.username);
+      res.cookie(Cookies.username, loginRes.username);
       res.cookie(Cookies.session, loginRes.token);
+      res.cookie(Cookies.userID, loginRes.userId);
       res.cookie(Cookies.loggedIn, true);
   	}
   	console.log("send response: " + JSON.stringify(result));
@@ -176,6 +180,40 @@ router.post(LOGOUT_API_PATH, (req, res) => {
 
   // send request to backend server
   captainClient.post(LOGOUT_API_PATH, logoutReq)
+  .then((response)=>{
+    console.log("recieve response from Captain Server: " + JSON.stringify(response.toObject()))
+    let errorMsg = new ErrorMessage(response.getResult(), response.getErrorDescription()).toObject();
+    let logoutRes = response.getLogoutResponse().toObject();
+    let result = {};
+    if (response.getResult() != protocol.ResultCode.SUCCESS){
+      result = {...result, ...errorMsg};
+    }else{
+      result = {...result, ...errorMsg, ...logoutRes};
+      clearCookie(req, res);
+    }
+    console.log("send response: " + JSON.stringify(result));
+    res.json(result);
+  })
+  .catch(err => {
+    console.log("handle response from Captain Server error: " + err);
+    let errorMsg = new ErrorMessage(protocol.ResultCode.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR");
+    console.log(errorMsg.toObject());
+    res.json(errorMsg.toObject());
+  })
+})
+
+router.post(USER_INFO_API_PATH, (req, res) => {
+  console.log("handle query user info request: " + JSON.stringify(req.cookies));
+  // check input
+  
+  // construct login request
+  let queryReq = new protocol.Request.QueryUserInfoRequest();
+  queryReq.setToken(req.cookies[Cookies.session]);
+  console.log("send request to Captain Server")
+  console.log("request: " + JSON.stringify(queryReq.toObject()))
+
+  // send request to backend server
+  captainClient.post(USER_INFO_API_PATH, queryReq)
   .then((response)=>{
     console.log("recieve response from Captain Server: " + JSON.stringify(response.toObject()))
     let errorMsg = new ErrorMessage(response.getResult(), response.getErrorDescription()).toObject();

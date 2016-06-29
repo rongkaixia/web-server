@@ -17,12 +17,11 @@ enum MsgType{
 enum LoginType{
   LOGIN_TYPE_EMPTY = 0x00000000; // due to the bug of scalapbc, do not use EMPTY in your code
 
-  LOGIN_BY_USERNAME = 0x00000001;
-  LOGIN_BY_PHONENUM = 0x00000002;
-  LOGIN_BY_EMAIL = 0x00000003;
+  LOGIN_BY_PHONENUM = 0x00000001;
+  LOGIN_BY_EMAIL = 0x00000002;
 
-  LOGIN_BY_WECHAT = 0x00000004;
-  LOGIN_BY_WEIBO = 0x00000005;
+  LOGIN_BY_WECHAT = 0x00000003;
+  LOGIN_BY_WEIBO = 0x00000004;
 }
 
 enum AuthType{
@@ -39,6 +38,9 @@ message Request{
     LoginRequest login_request = 1002;
     AuthenticationRequest authentication_request = 1003;
     LogoutRequest logout_request = 1004;
+    UpdateUserInfoRequest update_user_info_request = 1005;
+    UpdateSecQuestionRequest update_sec_question_request = 1006;
+    QueryUserInfoRequest query_user_info_request = 1007;
   }
 
   message SignupRequest{
@@ -49,8 +51,7 @@ message Request{
   message LoginRequest{
     oneof name{
       string phonenum = 1;
-      string username = 2;
-      string email = 3;
+      string email = 2;
     }
     string password = 10;
   }
@@ -64,6 +65,27 @@ message Request{
     string token = 1;
     // AuthType auth_name = 2;
   }
+
+  message QueryUserInfoRequest{
+    string user_id = 1;
+  }
+
+  message UpdateUserInfoRequest{
+    string user_id = 1;
+    string key = 2;
+    string value = 3;
+  }
+
+  message UpdateSecQuestionRequest{
+    message QuestionPair{
+      string question = 1;
+      string answer = 2;
+    }
+    string user_id = 1;
+    QuestionPair security_question1 = 2;
+    QuestionPair security_question2 = 3;
+    QuestionPair security_question3 = 4;
+  }
 }
 
 enum ResultCode{
@@ -71,22 +93,24 @@ enum ResultCode{
 
   INTERNAL_SERVER_ERROR = 10000;
 
+  // message error
   REQUEST_RESOURCE_NOT_FOUND = 10001;
   METHOD_NOT_ALLOW = 10002;
   MESSAGE_TYPE_ERROR = 10003;
   INVALID_MESSAGE = 10004;
 
-  SIGNUP_INVALID_PHONENUM = 20001;
-  SIGNUP_PHONENUM_ALREADY_EXISTED = 20002;
-  SIGNUP_INVALID_PASSWORD = 20003;
+  INVALID_PHONENUM = 20001;
+  PHONENUM_ALREADY_EXISTED = 20002;
+  INVALID_USER = 20003; // TODO: do we really need this?
+  INVALID_PASSWORD = 20004;
 
-  LOGIN_INVALID_USER = 30001;
-  LOGIN_INVALID_PASSWORD = 30002;
+  INVALID_SESSION_TOKEN = 30001; //auth
 
-  INVALID_SESSION_TOKEN = 40001; //auth
+  INVALID_FROM_TOKEN = 40001;
+  EXPIRED_FROM_TOKEN = 40002;
 
-  INVALID_FROM_TOKEN = 50001;
-  EXPIRED_FROM_TOKEN = 50002;
+  UPDATE_INVALID_KEY = 50001;
+  UPDATE_INVALID_VALUE = 50002;
 }
 
 message Response{
@@ -98,6 +122,9 @@ message Response{
     LoginResponse login_response = 1002;
     AuthenticationResponse authentication_response = 1003;
     LogoutResponse logout_response = 1004;
+    UpdateUserInfoResponse update_user_info_response = 1005;
+    UpdateSecQuestionResponse update_sec_question_response = 1006;
+    QueryUserInfoResponse query_user_info_response = 1007;
   }
   
   message SignupResponse{
@@ -107,16 +134,38 @@ message Response{
     string token = 1;
     int32 expires_in = 2;
     string user_id = 3;
+    string username = 4;
   }
 
   message AuthenticationResponse{
     bool is_expired = 1;
     int32 expires_in = 2;
     string user_id = 3;
+    string username = 4;
   }
 
   message LogoutResponse{
   }
+
+  message UpdateUserInfoResponse{
+  }
+
+  message UpdateSecQuestionResponse{
+  }  
+
+  message QueryUserInfoResponse{
+    string user_id = 1;
+    string username = 2;
+    string email = 4;
+    string phonenum = 5;
+    string security_question1 = 6;
+    string security_question2 = 7;
+    string security_question3 = 8;
+    string security_question1_ans = 9;
+    string security_question2_ans = 10;
+    string security_question3_ans = 11;
+  }
+
 }
 
 message Message{

@@ -76,6 +76,7 @@ export default (store) => {
       { /* Routes */ }
       <Route onEnter={requireNotLogin}>
         <Route path="login" component={Login}/>
+        <Route path="signup" component={Signup}/>
       </Route>
       <Route path="signup" component={Signup}/>
       <Route path="survey" component={Survey}/>
