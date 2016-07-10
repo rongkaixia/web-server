@@ -15,7 +15,7 @@ import * as authActions from 'redux/modules/auth';
   }
 }])
 @connect(
-  state => ({user: state.auth.user,
+  state => ({user: state.userInfo.user,
             location: state.routing.location,
             logoutError: state.auth.logoutError,
             logoutErrorDesc: state.auth.logoutErrorDesc,
@@ -64,7 +64,7 @@ export default class Logout extends Component {
         <h1>Login</h1>
         {user && !logoutError &&
         <div>
-          <p>You are currently logged in as {user.name}.</p>
+          <p>You are currently logged in as {user.usename}.</p>
           <div>
             <form>
               <input name="utf8" ref="authKey" type="hidden" value={logoutAuthKey.data} />

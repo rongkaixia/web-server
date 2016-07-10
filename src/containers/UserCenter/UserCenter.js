@@ -1,14 +1,22 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
+import { asyncConnect } from 'redux-async-connect';
 import {UserCenterLeftPanel} from 'containers';
 import Image from 'react-bootstrap/lib/Image';
 import { routeActions } from 'react-router-redux';
+import * as userAction from 'redux/modules/userInfo';
 
-import * as authActions from 'redux/modules/auth';
 
+// TODO: 增加错误展示界面，监听loadInfo的错误
 /* eslint-disable */ 
-@connect((state => ({user: state.auth.user})),
+@asyncConnect([{
+  promise: ({store: {dispatch, getState}, helpers: {client}}) => {
+    dispatch(userAction.loadInfo());
+    // return loadInfo();
+  }
+}])
+@connect((state => ({user: state.userInfo.user})),
         {redirectTo: routeActions.push})
 export default class UserCenter extends Component {
   static propTypes = {
@@ -38,8 +46,18 @@ export default class UserCenter extends Component {
     this.props.redirectTo('account/info');
   }
 
-  renderUserInfoPanel() {
-    const {user} = this.props;
+
+    // string user_id = 1;
+    // string username = 2;
+    // string email = 4;
+    // string phonenum = 5;
+    // string security_question1 = 6;
+    // string security_question2 = 7;
+    // string security_question3 = 8;
+    // string security_question1_ans = 9;
+    // string security_question2_ans = 10;
+    // string security_question3_ans = 11;
+  renderUserInfoPanel(user) {
     const styles = require('./UserCenter.scss');
     const imagePath = require('../../../static/user.png');
     return (
@@ -50,13 +68,13 @@ export default class UserCenter extends Component {
           </div>
           <div className="col-md-2">
             <ul className="nav nav-list">
-              <li>{"您好，" + user.name}</li>
+              <li>{"您好，" + user.username}</li>
               <li>欢迎回来</li>
             </ul>
           </div>
           <div className="col-md-8">
             <ul className="nav nav-list">
-              <li>{"账号：" + user.name} </li>
+              <li>{"账号：" + user.username} </li>
               {user.email &&
               <li>
                 {"绑定邮箱：" + user.email}
@@ -68,12 +86,12 @@ export default class UserCenter extends Component {
                 <button className="btn btn-warning btn-sm" onClick={this.redirectToAccountInfo}>立即绑定</button>
               </li>
               }
-              {user.phone &&
+              {user.phonenum &&
               <li>
-                {"绑定手机号：" + user.phone}
+                {"绑定手机号：" + user.phonenum}
               </li>
               }
-              {!user.phone &&
+              {!user.phonenum &&
               <li>
                 绑定手机号：未绑定
                 <button className="btn btn-warning btn-sm" onClick={this.redirectToAccountInfo}>立即绑定</button>
@@ -86,8 +104,7 @@ export default class UserCenter extends Component {
     );
   }
 
-  renderUserOrderPanel() {
-    const {user} = this.props;
+  renderUserOrderPanel(user) {
     const styles = require('./UserCenter.scss');
     const unpayOrderIconPath = require('../../../static/unpayOrder.png');
     const payedOrderIconPath = require('../../../static/payedOrder.png');
@@ -133,22 +150,24 @@ export default class UserCenter extends Component {
 
   render() {
     const styles = require('./UserCenter.scss');
-    const userInfoPanel = this.renderUserInfoPanel();
-    const userOrderPanel = this.renderUserOrderPanel();
+    const {user} = this.props;
+    // const userInfoPanel = this.renderUserInfoPanel(user);
+    // const userOrderPanel = this.renderUserOrderPanel(user);
     return (
       <div className={styles.userCenterPage + ' container'}>
         <h1>User Center</h1>
         <div className={styles.leftPanel}>
           <UserCenterLeftPanel/>
         </div>
+        {user && 
         <div className={styles.rightPanel}>
           <div className={styles.userInfoPanel}>
-            {userInfoPanel}
+            {this.renderUserInfoPanel(user)}
           </div>
           <div className={styles.userOrderPanel}>
-            {userOrderPanel}
+            {this.renderUserOrderPanel(user)}
           </div>
-        </div>
+        </div>}
 
       </div>
     );

@@ -1,12 +1,12 @@
 import React, {Component, PropTypes} from 'react';
 import Modal from 'react-modal';
 import { connect } from 'react-redux';
+import { asyncConnect } from 'redux-async-connect';
 import Helmet from 'react-helmet';
 import {UserCenterLeftPanel} from 'containers';
 import Image from 'react-bootstrap/lib/Image';
 import { routeActions } from 'react-router-redux';
-
-import * as authActions from 'redux/modules/auth';
+import * as userAction from 'redux/modules/userInfo';
 
 const customStyles = {
   content: {
@@ -20,13 +20,46 @@ const customStyles = {
 };
 
 /* eslint-disable */ 
-@connect((state => ({user: state.auth.user})),
-        {redirectTo: routeActions.push})
+@asyncConnect([{
+  promise: ({store: {dispatch, getState}, helpers: {client}}) => {
+    dispatch(userAction.loadInfo());
+    // return loadInfo();
+  }
+},{
+  key: 'accountInfoAuthKey',
+  promise: ({store: {dispatch, getState}, helpers: {client}}) => {
+    return client.get('/api/form_token');
+    // return new ApiClient().get('/api/form_token')
+  }
+}])
+@connect((state =>  ({user: state.userInfo.user,
+                      accountInfoAuthKey: state.reduxAsyncConnect.accountInfoAuthKey,
+                      loadInfoError: state.userInfo.loadInfoError,
+                      loadInfoErrorDesc: state.userInfo.loadInfoErrorDesc,
+                      updateInfoError: state.userInfo.updateInfoError,
+                      updateInfoErrorDesc: state.userInfo.updateInfoErrorDesc})),
+        {loadInfo: userAction.loadInfo, 
+        updateUsername: userAction.updateUsername, 
+        updatePhonenum: userAction.updatePhonenum, 
+        updateEmail: userAction.updateEmail, 
+        updatePassword: userAction.updatePassword, 
+        redirectTo: routeActions.push})
 export default class AccountInfo extends Component {
   static propTypes = {
     user: PropTypes.object,
+    accountInfoAuthKey: PropTypes.object,
+    loadInfoError: PropTypes.object,
+    loadInfoErrorDesc: PropTypes.object,
+    updateInfoError: PropTypes.object,
+    updateInfoErrorDesc: PropTypes.object,
+    loadInfo: PropTypes.func.isRequired,
+    updateUsername: PropTypes.func.isRequired,
+    updatePhonenum: PropTypes.func.isRequired,
+    updateEmail: PropTypes.func.isRequired,
+    updatePassword: PropTypes.func.isRequired,
     redirectTo: PropTypes.func.isRequired
   };
+
 
   state = {
     isUserModalOpen: false,
@@ -35,7 +68,8 @@ export default class AccountInfo extends Component {
     isEmailModalOpen: false,
     isQuestionModalOpen: false,
     isPhoneModalFirstStep: false,
-    isPhoneModalSecondStep: false
+    isPhoneModalSecondStep: false,
+    modifyPasswordError: null
   }
 
   openUserModal = (event) => {
@@ -86,8 +120,8 @@ export default class AccountInfo extends Component {
       isEmailModalOpen: false,
       isQuestionModalOpen: false,
       isPhoneModalFirstStep: false,
-      isPhoneModalSecondStep: false
-
+      isPhoneModalSecondStep: false,
+      modifyPasswordError: null
     });
   }
 
@@ -100,10 +134,17 @@ export default class AccountInfo extends Component {
   //   }
   // }
 
+
+  // username text, // user true name, not unique
+  // password text,
+  // email text,
+  // phonenum text,
   handleModifyUsername = (event) => {
     console.log("handleModifyUsername");
     event.preventDefault();
     const username = this.refs.username;
+    const authKey = this.refs.authKey;
+    this.props.updateUsername(username.value, authKey.value).then(this.props.loadInfo);
     this.setState({isUserModalOpen: false});
     // this.props.signup(username.value, password.value);
     // username.value = '';
@@ -112,8 +153,19 @@ export default class AccountInfo extends Component {
   handleModifyPassword = (event) => {
     console.log("handleModifyPassword");
     event.preventDefault();
-    const username = this.refs.username;
-    this.setState({isPasswordModalOpen: false});
+    const oldPassword = this.refs.oldPassword;
+    const newPassword = this.refs.newPassword;
+    const authKey = this.refs.authKey;
+    this.props.updatePassword(oldPassword.value, newPassword.value, authKey.value)
+    .then(() => {
+      this.props.loadInfo();
+      this.setState({isPasswordModalOpen: false});
+    })
+    .catch(err => {
+      console.log("handleModifyPassword error: " + JSON.stringify(err));
+      this.setState({modifyPasswordError: JSON.stringify(err)})
+    })
+    // this.setState({isPasswordModalOpen: false});
     // this.props.signup(username.value, password.value);
     // username.value = '';
   }
@@ -121,7 +173,9 @@ export default class AccountInfo extends Component {
   handleModifyEmail = (event) => {
     console.log("handleModifyEmail");
     event.preventDefault();
-    const username = this.refs.username;
+    const email = this.refs.email;
+    const authKey = this.refs.authKey;
+    this.props.updateEmail(email.value, authKey.value).then(this.props.loadInfo);
     this.setState({isEmailModalOpen: false});
     // this.props.signup(username.value, password.value);
     // username.value = '';
@@ -130,7 +184,9 @@ export default class AccountInfo extends Component {
   handleModifyPhone = (event) => {
     console.log("handleModifyPhone");
     event.preventDefault();
-    const username = this.refs.username;
+    const phonenum = this.refs.phonenum;
+    const authKey = this.refs.authKey;
+    this.props.updatePhonenum(phonenum.value, authKey.value).then(this.props.loadInfo);
     this.setState({isPhoneModalOpen: false});
     // this.props.signup(username.value, password.value);
     // username.value = '';
@@ -150,7 +206,7 @@ export default class AccountInfo extends Component {
     event.preventDefault();
   }
 
-  renderUserModal() {
+  renderUserModal(user) {
     return (
       <div>
         <Modal
@@ -172,7 +228,7 @@ export default class AccountInfo extends Component {
     );
   }
 
-  renderPasswordModal() {
+  renderPasswordModal(user) {
     return (
       <div>
         <Modal
@@ -186,7 +242,7 @@ export default class AccountInfo extends Component {
           <form className="login-form form-horizontal">
             <div className="form-group">
               原密码
-              <input type="text" ref="password" placeholder="请输入原密码" className="form-control"/>
+              <input type="text" ref="oldPassword" placeholder="请输入原密码" className="form-control"/>
             </div>
             <div className="form-group">
               新密码
@@ -194,6 +250,8 @@ export default class AccountInfo extends Component {
               <input type="text" ref="confirmedPassword" placeholder="请重复新密码" className="form-control"/>
               <div>密码长度8~16位，其中数字，字母和符号至少包含两种</div>
             </div>
+            {this.state.modifyPasswordError &&
+            <div>错误：{this.state.modifyPasswordError}</div>}
             <button className="btn btn-success" onClick={this.handleModifyPassword}>保存</button>
           </form>
         </Modal>      
@@ -201,7 +259,7 @@ export default class AccountInfo extends Component {
     );
   }
 
-  renderEmailModal() {
+  renderEmailModal(user) {
     return (
       <div>
         <Modal
@@ -213,6 +271,14 @@ export default class AccountInfo extends Component {
             <h4 ref="subtitle">绑定邮箱 <button style={{float: 'right'}} onClick={this.closeModal}>X</button></h4>
           </div>
           <form className="login-form form-horizontal">
+            {user.email &&
+            <div>
+              当前绑定邮箱为：{user.email}
+            </div>}
+            {!user.email &&
+            <div>
+              当前尚未绑定邮箱
+            </div>}
             <div className="form-group">
               <input type="text" ref="email" placeholder="请输入邮箱地址" className="form-control"/>
             </div>
@@ -223,7 +289,7 @@ export default class AccountInfo extends Component {
     );
   }
 
-  renderPhoneModal() {
+  renderPhoneModal(user) {
     return (
       <div>
         <Modal
@@ -237,7 +303,7 @@ export default class AccountInfo extends Component {
           {this.state.isPhoneModalFirstStep &&
             <form className="login-form form-horizontal">
               <div>
-                为了您的账号安全，请使用安全手机150******22获取验证码短信
+                为了您的账号安全，请使用安全手机{user.phonenum}获取验证码短信
               </div>
               <div className="form-group form-inline">
                 <input type="text" ref="vfcode" placeholder="请输入验证码" className="form-control"/>
@@ -264,7 +330,7 @@ export default class AccountInfo extends Component {
     );
   }
 
-  renderQuestionModal() {
+  renderQuestionModal(user) {
     return (
       <div>
         <Modal
@@ -310,21 +376,114 @@ export default class AccountInfo extends Component {
     );
   }
 
-  render() {
+  renderUserInfo(user) {
     const styles = require('./AccountInfo.scss');
-    const {leftPanel, rightPanel} = require('../UserCenter/UserCenter.scss');
+    const userModal = this.renderUserModal(user);
+    const passwordModal = this.renderPasswordModal(user);
+    const emailModal = this.renderEmailModal(user);
+    const phoneModal = this.renderPhoneModal(user);
+    const questionModal = this.renderQuestionModal(user);
     const userImagePath = require('../../../static/user.png');
     const passIconPath = require('./password.png');
     const emailIconPath = require('./email.png');
     const phoneIconPath = require('./phone.png');
     const questionIconPath = require('./securityQuestion.png');
+    const {accountInfoAuthKey} = this.props;
 
-    const userModal = this.renderUserModal();
-    const passwordModal = this.renderPasswordModal();
-    const emailModal = this.renderEmailModal();
-    const phoneModal = this.renderPhoneModal();
-    const questionModal = this.renderQuestionModal();
+    if (!user) {
+      return (<div></div>);
+    } else {
+      return (
+        <div className={styles.InfoPanel}>
+          个人信息
+          <input name="utf8" ref="authKey" type="hidden" value={accountInfoAuthKey.data} />
+          <div className="row">
+            <div className="col-md-2">
+              <Image href="#" alt="200x200 pull-xs-left" src={userImagePath} responsive rounded/>
+            </div>
+            <div className="col-md-2">
+              <ul className="nav nav-list">
+                <li>{"账户昵称：" + user.username}</li>
+                <li><button className="btn btn-warning btn-sm" onClick={this.openUserModal}>修改</button></li>
+                {userModal}
+              </ul>
+            </div>
+          </div>
 
+          <div className="row" style={{padding: '30px'}}>
+            <div className="col-md-1">
+              <Image href="#" alt="50x50 pull-xs-left" src={passIconPath} responsive rounded/>
+            </div>
+              <ul className="nav nav-list">
+                <li>
+                  账号密码
+                  <button className="btn btn-warning btn-sm" onClick={this.openPasswordModal}>修改</button>
+                </li>
+                <li style={{color: 'rgb(183, 179, 179)'}}>
+                  用于保护账号信息和安全
+                </li>
+                {passwordModal}
+              </ul>
+          </div>
+
+
+          <div className="row" style={{padding: '30px'}}>
+            <div className="col-md-1">
+              <Image href="#" alt="50x50 pull-xs-left" src={emailIconPath} responsive rounded/>
+            </div>
+              <ul className="nav nav-list">
+                <li>
+                  安全邮箱
+                  <button className="btn btn-warning btn-sm" onClick={this.openEmailModal}>绑定</button>
+                </li>
+                <li style={{color: 'rgb(183, 179, 179)'}}>
+                  安全邮箱可用于登录和重置密码
+                </li>
+                {emailModal}
+              </ul>
+          </div>
+
+
+          <div className="row" style={{padding: '30px'}}>
+            <div className="col-md-1">
+              <Image href="#" alt="50x50 pull-xs-left" src={questionIconPath} responsive rounded/>
+            </div>
+              <ul className="nav nav-list">
+                <li>
+                  安全手机
+                  <button className="btn btn-warning btn-sm" onClick={this.openPhoneModal}>绑定</button>
+                </li>
+                <li style={{color: 'rgb(183, 179, 179)'}}>
+                  安全手机可用于登录和重置密码
+                </li>
+                {phoneModal}
+              </ul>
+          </div>
+
+
+          <div className="row" style={{padding: '30px'}}>
+            <div className="col-md-1">
+              <Image href="#" alt="50x50 pull-xs-left" src={passIconPath} responsive rounded/>
+            </div>
+              <ul className="nav nav-list">
+                <li>
+                  密保问题
+                  <button className="btn btn-warning btn-sm" onClick={this.openQuestionModal}>设置</button>
+                </li>
+                <li style={{color: 'rgb(183, 179, 179)'}}>
+                  密保问题用于安全验证
+                </li>
+                {questionModal}
+              </ul>
+          </div>
+
+        </div>
+      )
+    }
+  }
+  render() {
+    const styles = require('./AccountInfo.scss');
+    const {leftPanel, rightPanel} = require('../UserCenter/UserCenter.scss');
     const {user} = this.props;
     return (
       <div className={'container'}>
@@ -332,91 +491,10 @@ export default class AccountInfo extends Component {
         <div className={leftPanel}>
           <UserCenterLeftPanel/>
         </div>
+        {user && 
         <div className={rightPanel}>
-          <div className={styles.InfoPanel}>
-            个人信息
-            <div className="row">
-              <div className="col-md-2">
-                <Image href="#" alt="200x200 pull-xs-left" src={userImagePath} responsive rounded/>
-              </div>
-              <div className="col-md-2">
-                <ul className="nav nav-list">
-                  <li>{"账户昵称：" + user.name}</li>
-                  <li><button className="btn btn-warning btn-sm" onClick={this.openUserModal}>修改</button></li>
-                  {userModal}
-                </ul>
-              </div>
-            </div>
-
-            <div className="row" style={{padding: '30px'}}>
-              <div className="col-md-1">
-                <Image href="#" alt="50x50 pull-xs-left" src={passIconPath} responsive rounded/>
-              </div>
-                <ul className="nav nav-list">
-                  <li>
-                    账号密码
-                    <button className="btn btn-warning btn-sm" onClick={this.openPasswordModal}>修改</button>
-                  </li>
-                  <li style={{color: 'rgb(183, 179, 179)'}}>
-                    用于保护账号信息和安全
-                  </li>
-                  {passwordModal}
-                </ul>
-            </div>
-
-
-            <div className="row" style={{padding: '30px'}}>
-              <div className="col-md-1">
-                <Image href="#" alt="50x50 pull-xs-left" src={emailIconPath} responsive rounded/>
-              </div>
-                <ul className="nav nav-list">
-                  <li>
-                    安全邮箱
-                    <button className="btn btn-warning btn-sm" onClick={this.openEmailModal}>绑定</button>
-                  </li>
-                  <li style={{color: 'rgb(183, 179, 179)'}}>
-                    安全邮箱可用于登录和重置密码
-                  </li>
-                  {emailModal}
-                </ul>
-            </div>
-
-
-            <div className="row" style={{padding: '30px'}}>
-              <div className="col-md-1">
-                <Image href="#" alt="50x50 pull-xs-left" src={questionIconPath} responsive rounded/>
-              </div>
-                <ul className="nav nav-list">
-                  <li>
-                    安全手机
-                    <button className="btn btn-warning btn-sm" onClick={this.openPhoneModal}>绑定</button>
-                  </li>
-                  <li style={{color: 'rgb(183, 179, 179)'}}>
-                    安全手机可用于登录和重置密码
-                  </li>
-                  {phoneModal}
-                </ul>
-            </div>
-
-
-            <div className="row" style={{padding: '30px'}}>
-              <div className="col-md-1">
-                <Image href="#" alt="50x50 pull-xs-left" src={passIconPath} responsive rounded/>
-              </div>
-                <ul className="nav nav-list">
-                  <li>
-                    密保问题
-                    <button className="btn btn-warning btn-sm" onClick={this.openQuestionModal}>设置</button>
-                  </li>
-                  <li style={{color: 'rgb(183, 179, 179)'}}>
-                    密保问题用于安全验证
-                  </li>
-                  {questionModal}
-                </ul>
-            </div>
-
-          </div>
-        </div>
+          {this.renderUserInfo(user)}
+        </div>}
 
       </div>
     );

@@ -1,11 +1,23 @@
 const isEmpty = value => value === undefined || value === null || value === '';
 const join = (rules) => (value, data) => rules.map(rule => rule(value, data)).filter(error => !!error)[0 /* first error */ ];
 
+export function empty(value) {
+  return isEmpty(value);
+}
+
 export function email(value) {
   // Let's not start a debate on email regex. This is just for an example app!
   if (!isEmpty(value) && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
     return 'Invalid email address';
   }
+}
+
+export function phonenum(formString) {
+  return /^(0|86|17951)?(13[0-9]|15[012356789]|17[6780]|18[0-9]|14[57])[0-9]{8}$/.test(formString);
+}
+
+export function chineseName(formString) {
+  return /^[\u4e00-\u9fff]$/.test(formString);
 }
 
 export function required(value) {

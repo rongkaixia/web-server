@@ -27,15 +27,15 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         loading: false,
-        loaded: true,
-        user: action.userId ? {id: action.userId, name: action.username} : null
+        loaded: true
+        // user: action.data.userId ? action.data : null
       };
     case LOAD_FAIL:
       return {
         ...state,
         loading: false,
         loaded: false,
-        error: action.error
+        error: action.errorDescription
       };
     case LOGIN:
       return {
@@ -46,7 +46,7 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         loggingIn: false,
-        user: {id: action.userId, name: action.username},
+        // user: action.data.userId ? action.data : null,
         loginError: false,
         loginErrorDesc: action.errorDescription
       };
@@ -54,7 +54,7 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         loggingIn: false,
-        user: null,
+        // user: null,
         loginError: action.errorCode,
         loginErrorDesc: action.errorDescription
       };
@@ -67,7 +67,7 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         loggingOut: false,
-        user: null,
+        // user: null,
         logoutError: false,
         logoutErrorDesc: action.errorDescription
       };
@@ -150,3 +150,6 @@ export function signup(username, password, authKey) {
     })
   };
 }
+
+/* eslint-disable */ 
+export {LOAD_SUCCESS, LOGIN_SUCCESS, SIGNUP_SUCCESS, LOGOUT_SUCCESS};

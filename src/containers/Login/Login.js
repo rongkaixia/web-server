@@ -16,7 +16,7 @@ import * as authActions from 'redux/modules/auth';
   }
 }])
 @connect(
-  state => ({user: state.auth.user,
+  state => ({user: state.userInfo.user,
   					location: state.routing.location,
 						loginError: state.auth.loginError,
 						loginErrorDesc: state.auth.loginErrorDesc,
@@ -90,7 +90,7 @@ export default class Login extends Component {
         }
         {user &&
         <div>
-          <p>You are currently logged in as {user.name}.</p>
+          <p>You are currently logged in as {user.username}.</p>
         </div>
         }
       </div>

@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-// ./scalapbc-0.5.26/bin/scalapbc protocol/com.echo.protocol.proto --scala_out=./src/main/scala/
+package com.echo;
+
+// ./scalapbc-0.5.26/bin/scalapbc protocol/protocol.proto --scala_out=./src/main/scala/
 // ../protoc-3.0.0-beta-3-osx-x86_64/protoc --js_out=import_style=commonjs,binary:. com.echo.protocol.proto
 enum MsgType{
   MSG_TYPE_EMPTY = 0x00000000; // due to the bug of scalapbc, do not use EMPTY in your code
@@ -38,9 +40,16 @@ message Request{
     LoginRequest login_request = 1002;
     AuthenticationRequest authentication_request = 1003;
     LogoutRequest logout_request = 1004;
-    UpdateUserInfoRequest update_user_info_request = 1005;
-    UpdateSecQuestionRequest update_sec_question_request = 1006;
-    QueryUserInfoRequest query_user_info_request = 1007;
+    QueryUserInfoRequest query_user_info_request = 1005;
+    UpdateUsernameRequest update_username_request = 1006;
+    UpdatePhonenumRequest update_phonenum_request = 1007;
+    UpdateEmailRequest update_email_request = 1008;
+    UpdatePasswordRequest update_password_request = 1009;
+    UpdateSecQuestionRequest update_sec_question_request = 1010;
+
+    AddUserAddressRequest add_user_address_request = 1100;
+    UpdateUserAddressRequest update_user_address_request = 1101;
+    DeleteUserAddressRequest delete_user_address_request = 1102;
   }
 
   message SignupRequest{
@@ -67,13 +76,32 @@ message Request{
   }
 
   message QueryUserInfoRequest{
-    string user_id = 1;
+    string token = 1;
   }
 
-  message UpdateUserInfoRequest{
-    string user_id = 1;
-    string key = 2;
-    string value = 3;
+  message UpdateUsernameRequest{
+    string token = 1;
+    string old_username = 2;
+    string new_username = 3;
+  }
+
+  message UpdatePasswordRequest{
+    string token = 1;
+    string old_password = 2;
+    string new_password = 3;
+  }
+
+
+  message UpdatePhonenumRequest{
+    string token = 1;
+    string old_phonenum = 2;
+    string new_phonenum = 3;
+  }
+
+  message UpdateEmailRequest{
+    string token = 1;
+    string old_email = 2;
+    string new_email = 3;
   }
 
   message UpdateSecQuestionRequest{
@@ -81,10 +109,32 @@ message Request{
       string question = 1;
       string answer = 2;
     }
-    string user_id = 1;
+    string token = 1;
     QuestionPair security_question1 = 2;
     QuestionPair security_question2 = 3;
     QuestionPair security_question3 = 4;
+  }
+
+  message AddUserAddressRequest{
+    string token = 1;
+    string recipients_name = 3;
+    string recipients_phone = 4;
+    string recipients_address = 5;
+    string recipients_postcode = 6;
+  }
+
+  message UpdateUserAddressRequest{
+    string token = 1;
+    string id = 2;
+    string recipients_name = 3;
+    string recipients_phone = 4;
+    string recipients_address = 5;
+    string recipients_postcode = 6;
+  }
+
+  message DeleteUserAddressRequest{
+    string token = 1;
+    string id = 2;
   }
 }
 
@@ -99,18 +149,23 @@ enum ResultCode{
   MESSAGE_TYPE_ERROR = 10003;
   INVALID_MESSAGE = 10004;
 
+  // signin or signup error
   INVALID_PHONENUM = 20001;
-  PHONENUM_ALREADY_EXISTED = 20002;
-  INVALID_USER = 20003; // TODO: do we really need this?
-  INVALID_PASSWORD = 20004;
+  INVALID_EMAIL = 20002;
+  PHONENUM_ALREADY_EXISTED = 20005;
+  EMAIL_ALREADY_EXISTED = 20006;
+  INVALID_PASSWORD = 20011;
 
-  INVALID_SESSION_TOKEN = 30001; //auth
+  // auth error
+  INVALID_SESSION_TOKEN = 30001;
+  SESSION_TOKEN_EXPIRED = 30002;
 
+  // form authentication error
   INVALID_FROM_TOKEN = 40001;
   EXPIRED_FROM_TOKEN = 40002;
 
-  UPDATE_INVALID_KEY = 50001;
-  UPDATE_INVALID_VALUE = 50002;
+  // update error
+  ILLEGAL_ARGUMENT = 50001;
 }
 
 message Response{
@@ -122,40 +177,48 @@ message Response{
     LoginResponse login_response = 1002;
     AuthenticationResponse authentication_response = 1003;
     LogoutResponse logout_response = 1004;
-    UpdateUserInfoResponse update_user_info_response = 1005;
-    UpdateSecQuestionResponse update_sec_question_response = 1006;
-    QueryUserInfoResponse query_user_info_response = 1007;
+    QueryUserInfoResponse query_user_info_response = 1005;
+    UpdateUsernameResponse update_username_response = 1006;
+    UpdatePhonenumResponse update_phonenum_response = 1007;
+    UpdateEmailResponse update_email_response = 1008;
+    UpdatePasswordResponse update_password_response = 1009;
+    UpdateSecQuestionResponse update_sec_question_response = 1010;
+    AddUserAddressResponse add_user_address_reponse = 1100;
+    UpdateUserAddressResponse update_user_address_reponse = 1101;
+    DeleteUserAddressResponse delete_user_address_reponse = 1102;
   }
-  
+    
   message SignupResponse{
   }
 
   message LoginResponse{
-    string token = 1;
-    int32 expires_in = 2;
-    string user_id = 3;
-    string username = 4;
+    string token = 2;
+    int32 expires_in = 3;
+    string user_id = 4;
+    string username = 5;
   }
 
   message AuthenticationResponse{
-    bool is_expired = 1;
-    int32 expires_in = 2;
-    string user_id = 3;
-    string username = 4;
+    bool is_expired = 2;
+    int32 expires_in = 3;
+    string user_id = 4;
+    string username = 5;
   }
 
   message LogoutResponse{
   }
 
-  message UpdateUserInfoResponse{
-  }
-
-  message UpdateSecQuestionResponse{
-  }  
-
   message QueryUserInfoResponse{
-    string user_id = 1;
-    string username = 2;
+    message AddressData{
+      string id = 1;
+      string recipients_name = 2;
+      string recipients_phone = 3;
+      string recipients_address = 4;
+      string recipients_postcode = 5;
+    }
+
+    string user_id = 2;
+    string username = 3;
     string email = 4;
     string phonenum = 5;
     string security_question1 = 6;
@@ -164,6 +227,32 @@ message Response{
     string security_question1_ans = 9;
     string security_question2_ans = 10;
     string security_question3_ans = 11;
+    repeated AddressData addressArray = 20;
+  }
+
+  message UpdateUsernameResponse{
+  }
+
+  message UpdatePasswordResponse{
+  
+  }
+
+  message UpdatePhonenumResponse{
+  }
+
+  message UpdateEmailResponse{
+  }
+
+  message UpdateSecQuestionResponse{
+  }
+
+  message AddUserAddressResponse{
+  }
+
+  message UpdateUserAddressResponse{
+  }
+
+  message DeleteUserAddressResponse{
   }
 
 }

@@ -1,10 +1,10 @@
 
 import Express from 'express';
 import BodyParser from 'body-parser';
+import CookieParser from 'cookie-parser';
 import CaptainClient from './helpers/CaptainClient';
 import ErrorMessage from './error';
 import Cookies from './cookies';
-import CookieParser from 'cookie-parser';
 import { generateCsrfToken, validateCsrfToken, VALIDATE_RESULT } from 'utils/AuthenticityToken';
 import FormAuthenticator from 'middleware/FormAuthenticator';
 const protocol = require('../lib/protocol/com.echo.protocol_pb');
@@ -15,6 +15,14 @@ const LOGIN_API_PATH = '/login';
 const LOGOUT_API_PATH = '/logout';
 const VALIDATE_TOKEN_API_PATH = '/auth';
 const USER_INFO_API_PATH = '/user/info';
+
+const USERNAME_API_SUFFIX = 'username';
+const PASSWORD_API_SUFFIX = 'password';
+const PHONENYM_API_SUFFIX = 'phonenum';
+const EMAIL_API_SUFFIX = 'email';
+const ADD_ADDRESS_API_SUFFIX = 'addressadd';
+const UPDATE_ADDRESS_API_SUFFIX = 'addressupdate';
+const DELETE_ADDRESS_API_SUFFIX = 'addressdelete';
 
 function checkPassword(password){
 	return true
@@ -65,11 +73,13 @@ router.post(SIGNUP_API_PATH, (req, res) => {
   let signupReq = new protocol.Request.SignupRequest();
   signupReq.setPhonenum(req.body.username);
   signupReq.setPassword(req.body.password);
+  let request = new protocol.Request();
+  request.setSignupRequest(signupReq);
   console.log("send request to Captain Server")
-  console.log("request: " + JSON.stringify(signupReq.toObject()))
+  console.log("request: " + JSON.stringify(request.toObject()))
 
   // send request to backend server
-  captainClient.post(SIGNUP_API_PATH, signupReq)
+  captainClient.post(request)
   .then((response)=>{
 		console.log("recieve response from Captain Server: " + JSON.stringify(response.toObject()))
 		let errorMsg = new ErrorMessage(response.getResult(), response.getErrorDescription()).toObject();
@@ -77,7 +87,8 @@ router.post(SIGNUP_API_PATH, (req, res) => {
 		if (response.getResult() != protocol.ResultCode.SUCCESS){
 			result = {...result, ...errorMsg};
   	}else{
-  		result = {...result, ...errorMsg, ...response.getSignupResponse().toObject()};
+      let data = response.getSignupResponse().toObject();
+  		result = {...result, ...errorMsg, ...{data:data}};
   	}
   	console.log("send response: " + JSON.stringify(result));
   	res.json(result);
@@ -98,23 +109,25 @@ router.post(LOGIN_API_PATH, (req, res) => {
   let loginReq = new protocol.Request.LoginRequest();
   loginReq.setPhonenum(req.body.username);
   loginReq.setPassword(req.body.password);
+  let request = new protocol.Request();
+  request.setLoginRequest(loginReq);
   console.log("send request to Captain Server")
-  console.log("request: " + JSON.stringify(loginReq.toObject()))
+  console.log("request: " + JSON.stringify(request.toObject()))
 
   // send request to backend server
-  captainClient.post(LOGIN_API_PATH, loginReq)
+  captainClient.post(request)
   .then((response)=>{
 		console.log("recieve response from Captain Server: " + JSON.stringify(response.toObject()))
 		let errorMsg = new ErrorMessage(response.getResult(), response.getErrorDescription()).toObject();
-		let loginRes = response.getLoginResponse().toObject();
 		let result = {};
 		if (response.getResult() != protocol.ResultCode.SUCCESS){
 			result = {...result, ...errorMsg};
   	}else{
-  		result = {...result, ...errorMsg, ...loginRes};
-      res.cookie(Cookies.username, loginRes.username);
-      res.cookie(Cookies.session, loginRes.token);
-      res.cookie(Cookies.userID, loginRes.userId);
+      let data = response.getLoginResponse().toObject();
+  		result = {...result, ...errorMsg, ...{data:data}};
+      res.cookie(Cookies.username, data.username);
+      res.cookie(Cookies.session, data.token);
+      res.cookie(Cookies.userID, data.userId);
       res.cookie(Cookies.loggedIn, true);
   	}
   	console.log("send response: " + JSON.stringify(result));
@@ -135,23 +148,25 @@ router.get(VALIDATE_TOKEN_API_PATH, (req, res) => {
   // construct login request
   let authReq = new protocol.Request.AuthenticationRequest();
   authReq.setToken(req.cookies[Cookies.session]);
+  let request = new protocol.Request();
+  request.setAuthenticationRequest(authReq);
   console.log("send request to Captain Server")
-  console.log("request: " + JSON.stringify(authReq.toObject()))
+  console.log("request: " + JSON.stringify(request.toObject()))
 
   // send request to backend server
-  captainClient.post(VALIDATE_TOKEN_API_PATH, authReq)
+  captainClient.post(request)
   .then((response)=>{
     console.log("recieve response from Captain Server: " + JSON.stringify(response.toObject()))
     let errorMsg = new ErrorMessage(response.getResult(), response.getErrorDescription()).toObject();
-    let authRes = response.getAuthenticationResponse().toObject();
     let result = {};
     if (response.getResult() != protocol.ResultCode.SUCCESS){
       result = {...result, ...errorMsg};
       // TODO: clear cookies
       // clearCookie(req, res);
     }else{
-      result = {...result, ...errorMsg, ...authRes};
-      if (authRes.isExpired == true) {
+      let data = response.getAuthenticationResponse().toObject();
+      result = {...result, ...errorMsg, ...{data:data}};
+      if (data.isExpired == true) {
         clearCookie(req, res);
       }
     }
@@ -175,20 +190,22 @@ router.post(LOGOUT_API_PATH, (req, res) => {
   // construct login request
   let logoutReq = new protocol.Request.LogoutRequest();
   logoutReq.setToken(req.cookies[Cookies.session]);
+  let request = new protocol.Request();
+  request.setLogoutRequest(logoutReq);
   console.log("send request to Captain Server")
-  console.log("request: " + JSON.stringify(logoutReq.toObject()))
+  console.log("request: " + JSON.stringify(request.toObject()))
 
   // send request to backend server
-  captainClient.post(LOGOUT_API_PATH, logoutReq)
+  captainClient.post(request)
   .then((response)=>{
     console.log("recieve response from Captain Server: " + JSON.stringify(response.toObject()))
     let errorMsg = new ErrorMessage(response.getResult(), response.getErrorDescription()).toObject();
-    let logoutRes = response.getLogoutResponse().toObject();
     let result = {};
     if (response.getResult() != protocol.ResultCode.SUCCESS){
       result = {...result, ...errorMsg};
     }else{
-      result = {...result, ...errorMsg, ...logoutRes};
+      let data = response.getLogoutResponse().toObject();
+      result = {...result, ...errorMsg, ...{data:data}};
       clearCookie(req, res);
     }
     console.log("send response: " + JSON.stringify(result));
@@ -202,29 +219,98 @@ router.post(LOGOUT_API_PATH, (req, res) => {
   })
 })
 
-router.post(USER_INFO_API_PATH, (req, res) => {
+router.get(USER_INFO_API_PATH, (req, res) => {
   console.log("handle query user info request: " + JSON.stringify(req.cookies));
   // check input
   
   // construct login request
   let queryReq = new protocol.Request.QueryUserInfoRequest();
   queryReq.setToken(req.cookies[Cookies.session]);
+  let request = new protocol.Request();
+  request.setQueryUserInfoRequest(queryReq);
   console.log("send request to Captain Server")
-  console.log("request: " + JSON.stringify(queryReq.toObject()))
+  console.log("request: " + JSON.stringify(request.toObject()))
 
   // send request to backend server
-  captainClient.post(USER_INFO_API_PATH, queryReq)
+  captainClient.post(request)
   .then((response)=>{
     console.log("recieve response from Captain Server: " + JSON.stringify(response.toObject()))
     let errorMsg = new ErrorMessage(response.getResult(), response.getErrorDescription()).toObject();
-    let logoutRes = response.getLogoutResponse().toObject();
     let result = {};
     if (response.getResult() != protocol.ResultCode.SUCCESS){
       result = {...result, ...errorMsg};
     }else{
-      result = {...result, ...errorMsg, ...logoutRes};
-      clearCookie(req, res);
+      let data = response.getQueryUserInfoResponse().toObject();
+      result = {...result, ...errorMsg, ...{data:data}};
     }
+    console.log("send response: " + JSON.stringify(result));
+    res.json(result);
+  })
+  .catch(err => {
+    console.log("handle response from Captain Server error: " + err);
+    let errorMsg = new ErrorMessage(protocol.ResultCode.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR");
+    console.log(errorMsg.toObject());
+    res.json(errorMsg.toObject());
+  })
+})
+
+router.post(USER_INFO_API_PATH + '/:suffix', (req, res) => {
+  console.log("handle update user info request(" + req.params.suffix + "): " + JSON.stringify(req.cookies));
+  // check input
+  
+  // construct request
+  let request = new protocol.Request();
+  if (req.params.suffix === USERNAME_API_SUFFIX) {
+    let r = new protocol.Request.UpdateUsernameRequest();
+    r.setToken(req.cookies[Cookies.session]);
+    r.setNewUsername(req.body.newUsername);
+    request.setUpdateUsernameRequest(r);
+  } else if (req.params.suffix === PHONENYM_API_SUFFIX) {
+    let r = new protocol.Request.UpdatePhonenumRequest();
+    r.setToken(req.cookies[Cookies.session]);
+    r.setNewPhonenum(req.body.newPhonenum);
+    request.setUpdatePhonenumRequest(r);
+  } else if (req.params.suffix === EMAIL_API_SUFFIX) {
+    let r = new protocol.Request.UpdateEmailRequest();
+    r.setToken(req.cookies[Cookies.session]);
+    r.setNewEmail(req.body.newEmail);
+    request.setUpdateEmailRequest(r);
+  } else if (req.params.suffix === PASSWORD_API_SUFFIX) {
+    let r = new protocol.Request.UpdatePasswordRequest();
+    r.setToken(req.cookies[Cookies.session]);
+    r.setOldPassword(req.body.oldPassword);
+    r.setNewPassword(req.body.newPassword);
+    request.setUpdatePasswordRequest(r);
+  }else if (req.params.suffix === ADD_ADDRESS_API_SUFFIX) {
+    console.log("========add address ===========");
+    let r = new protocol.Request.AddUserAddressRequest();
+    r.setToken(req.cookies[Cookies.session]);
+    r.setRecipientsName(req.body.recipientsName);
+    r.setRecipientsPhone(req.body.recipientsPhone);
+    r.setRecipientsAddress(req.body.recipientsAddress);
+    request.setAddUserAddressRequest(r);
+  }else if (req.params.suffix === UPDATE_ADDRESS_API_SUFFIX) {
+    console.log("========update address ===========");
+    let r = new protocol.Request.UpdateUserAddressRequest();
+    r.setToken(req.cookies[Cookies.session]);
+    r.setId(req.body.id);
+    r.setRecipientsName(req.body.recipientsName);
+    r.setRecipientsPhone(req.body.recipientsPhone);
+    r.setRecipientsAddress(req.body.recipientsAddress);
+    request.setUpdateUserAddressRequest(r);
+  }else {
+    console.log("ERROR: not supported path " + USER_INFO_API_PATH + req.params.suffix);
+  }
+
+  console.log("send request to Captain Server")
+  console.log("request: " + JSON.stringify(request.toObject()))
+
+  // send request to backend server
+  captainClient.post(request)
+  .then((response)=>{
+    // console.log("recieve response from Captain Server: " + JSON.stringify(response.toObject()))
+    let errorMsg = new ErrorMessage(response.getResult(), response.getErrorDescription()).toObject();
+    let result = {...errorMsg};
     console.log("send response: " + JSON.stringify(result));
     res.json(result);
   })

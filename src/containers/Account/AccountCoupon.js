@@ -1,14 +1,21 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
+import { asyncConnect } from 'redux-async-connect';
 import Helmet from 'react-helmet';
 import Modal from 'react-modal';
 import {UserCenterLeftPanel} from 'containers';
 import Image from 'react-bootstrap/lib/Image';
 import { routeActions } from 'react-router-redux';
-import * as authActions from 'redux/modules/auth';
+import * as userAction from 'redux/modules/userInfo';
 
 /* eslint-disable */ 
-@connect((state => ({user: state.auth.user})),
+@asyncConnect([{
+  promise: ({store: {dispatch, getState}, helpers: {client}}) => {
+    dispatch(userAction.loadInfo());
+    // return loadInfo();
+  }
+}])
+@connect((state => ({user: state.userInfo.user})),
         {redirectTo: routeActions.push})
 export default class AccountCoupon extends Component {
   static propTypes = {

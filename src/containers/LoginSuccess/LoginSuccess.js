@@ -4,7 +4,7 @@ import {generateCsrfToken} from 'utils/AuthenticityToken'
 import * as authActions from 'redux/modules/auth';
 
 @connect(
-    state => ({user: state.auth.user}),
+    state => ({user: state.userInfo.user}),
     authActions)
 export default
 class LoginSuccess extends Component {
@@ -28,7 +28,7 @@ class LoginSuccess extends Component {
         <h1>Login Success</h1>
 
         <div>
-          <p>Hi, {user.name}. You have just successfully logged in, and were forwarded here
+          <p>Hi, {user.usename}. You have just successfully logged in, and were forwarded here
             by <code>componentWillReceiveProps()</code> in <code>App.js</code>, which is listening to
             the auth reducer via redux <code>@connect</code>. How exciting!
           </p>

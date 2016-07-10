@@ -21,7 +21,7 @@ import {
 export default (store) => {
   const requireLogin = (nextState, replace, cb) => {
     function checkAuth() {
-      const { auth: { user }} = store.getState();
+      const { userInfo: { user }} = store.getState();
       if (!user) {
         // oops, not logged in, so can't be here!
         replace('/');
@@ -37,7 +37,7 @@ export default (store) => {
   };
   const requireNotLogin = (nextState, replace, cb) => {
     function checkAuth() {
-      const { auth: { user }} = store.getState();
+      const { userInfo: { user }} = store.getState();
       if (user) {
         // oops, not logged in, so can't be here!
         replace('/');

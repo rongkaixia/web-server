@@ -4,10 +4,10 @@ import { routeReducer } from 'react-router-redux';
 import {reducer as reduxAsyncConnect} from 'redux-async-connect';
 
 import auth from './auth';
-import formAuth from './formAuth';
 import counter from './counter';
 import {reducer as form} from 'redux-form';
 import info from './info';
+import userInfo from './userInfo';
 import widgets from './widgets';
 
 // console.log("formAuth: " + formAuth);
@@ -16,7 +16,7 @@ export default combineReducers({
   routing: routeReducer,
   reduxAsyncConnect,
   auth,
-  formAuth,
+  userInfo,
   form,
   multireducer: multireducer({
     counter1: counter,
