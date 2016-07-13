@@ -1,5 +1,6 @@
 var superagent =  require('superagent');
-var protocol = require('../lib/protocol/com.echo.protocol_pb')
+var protocol = require('../lib/protocol/protocol_pb')
+// let protocol = require('protocol');
 var textEncoding = require('text-encoding')
 
 function binaryParser(res, callback) {

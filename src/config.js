@@ -16,6 +16,7 @@ module.exports = Object.assign({
   apiPort: process.env.APIPORT,
   captainHost: process.env.CAPTAIN_HOST || 'localhost',
   captainPort: process.env.CAPTAIN_PORT,
+  captainApiPath: '/api/v1.0',
   app: {
     title: 'jade-web-server',
     description: 'All the modern best practices in one example.',

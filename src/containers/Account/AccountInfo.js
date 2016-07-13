@@ -8,6 +8,10 @@ import Image from 'react-bootstrap/lib/Image';
 import { routeActions } from 'react-router-redux';
 import * as userAction from 'redux/modules/userInfo';
 
+// console.log("+++++++++++++++++++++++++");
+// const userImagePath = require('../../../static/user.png');
+// console.log("userImagePath: " + userImagePath);
+
 const customStyles = {
   content: {
     top: '50%',
@@ -22,7 +26,7 @@ const customStyles = {
 /* eslint-disable */ 
 @asyncConnect([{
   promise: ({store: {dispatch, getState}, helpers: {client}}) => {
-    dispatch(userAction.loadInfo());
+    return dispatch(userAction.loadInfo());
     // return loadInfo();
   }
 },{

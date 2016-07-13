@@ -5,7 +5,8 @@ import CookieParser from 'cookie-parser';
 import {validateCsrfToken, VALIDATE_RESULT} from 'utils/AuthenticityToken'
 import ErrorMessage from '../error';
 import Cookies from '../cookies';
-const protocol = require('../../lib/protocol/com.echo.protocol_pb')
+// let protocol = require('protocol');
+const protocol = require('../../lib/protocol/protocol_pb')
 
 let router = Express.Router();
 router.use(BodyParser.json()); // for parsing application/json

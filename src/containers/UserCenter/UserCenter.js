@@ -12,7 +12,7 @@ import * as userAction from 'redux/modules/userInfo';
 /* eslint-disable */ 
 @asyncConnect([{
   promise: ({store: {dispatch, getState}, helpers: {client}}) => {
-    dispatch(userAction.loadInfo());
+    return dispatch(userAction.loadInfo());
     // return loadInfo();
   }
 }])

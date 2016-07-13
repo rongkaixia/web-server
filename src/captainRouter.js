@@ -2,12 +2,13 @@
 import Express from 'express';
 import BodyParser from 'body-parser';
 import CookieParser from 'cookie-parser';
-import CaptainClient from './helpers/CaptainClient';
+import CaptainClient from 'api/captain/CaptainClient';
 import ErrorMessage from './error';
 import Cookies from './cookies';
 import { generateCsrfToken, validateCsrfToken, VALIDATE_RESULT } from 'utils/AuthenticityToken';
 import FormAuthenticator from 'middleware/FormAuthenticator';
-const protocol = require('../lib/protocol/com.echo.protocol_pb');
+// let protocol = require('protocol');
+const protocol = require('../lib/protocol/protocol_pb');
 const captainClient = new CaptainClient();
 
 const SIGNUP_API_PATH = '/signup';
@@ -15,11 +16,13 @@ const LOGIN_API_PATH = '/login';
 const LOGOUT_API_PATH = '/logout';
 const VALIDATE_TOKEN_API_PATH = '/auth';
 const USER_INFO_API_PATH = '/user/info';
+const USER_ADDRESS_API_PATH = '/user/address';
 
 const USERNAME_API_SUFFIX = 'username';
 const PASSWORD_API_SUFFIX = 'password';
 const PHONENYM_API_SUFFIX = 'phonenum';
 const EMAIL_API_SUFFIX = 'email';
+
 const ADD_ADDRESS_API_SUFFIX = 'addressadd';
 const UPDATE_ADDRESS_API_SUFFIX = 'addressupdate';
 const DELETE_ADDRESS_API_SUFFIX = 'addressdelete';
@@ -39,6 +42,8 @@ router.use(CookieParser())
 
 // FormAuthenticator middleware
 router.post('*', FormAuthenticator);
+router.put('*', FormAuthenticator);
+router.delete('*', FormAuthenticator);
 
 // get form authenticity token
 router.get('/api/form_token', (req, res) => {
@@ -257,30 +262,35 @@ router.get(USER_INFO_API_PATH, (req, res) => {
 router.post(USER_INFO_API_PATH + '/:suffix', (req, res) => {
   console.log("handle update user info request(" + req.params.suffix + "): " + JSON.stringify(req.cookies));
   // check input
-  
+
   // construct request
+  let data = new protocol.Request.UpdateUserInfoRequest.UpdateData
   let request = new protocol.Request();
   if (req.params.suffix === USERNAME_API_SUFFIX) {
-    let r = new protocol.Request.UpdateUsernameRequest();
+    let r = new protocol.Request.UpdateUserInfoRequest();
+    data.setUsername(req.body.newUsername);
     r.setToken(req.cookies[Cookies.session]);
-    r.setNewUsername(req.body.newUsername);
-    request.setUpdateUsernameRequest(r);
+    r.setDataList([data])
+    request.setUpdateUserInfoRequest(r);
   } else if (req.params.suffix === PHONENYM_API_SUFFIX) {
-    let r = new protocol.Request.UpdatePhonenumRequest();
+    let r = new protocol.Request.UpdateUserInfoRequest();
+    data.setPhonenum(req.body.newPhonenum);
     r.setToken(req.cookies[Cookies.session]);
-    r.setNewPhonenum(req.body.newPhonenum);
-    request.setUpdatePhonenumRequest(r);
+    r.setDataList([data])
+    request.setUpdateUserInfoRequest(r);
   } else if (req.params.suffix === EMAIL_API_SUFFIX) {
-    let r = new protocol.Request.UpdateEmailRequest();
+    let r = new protocol.Request.UpdateUserInfoRequest();
+    data.setEmail(req.body.newEmail);
     r.setToken(req.cookies[Cookies.session]);
-    r.setNewEmail(req.body.newEmail);
-    request.setUpdateEmailRequest(r);
+    r.setDataList([data])
+    request.setUpdateUserInfoRequest(r);
   } else if (req.params.suffix === PASSWORD_API_SUFFIX) {
-    let r = new protocol.Request.UpdatePasswordRequest();
+    let r = new protocol.Request.UpdateUserInfoRequest();
+    data.setPassword(req.body.newPassword);
     r.setToken(req.cookies[Cookies.session]);
-    r.setOldPassword(req.body.oldPassword);
-    r.setNewPassword(req.body.newPassword);
-    request.setUpdatePasswordRequest(r);
+    // r.setOldPassword(req.body.oldPassword);
+    r.setDataList([data])
+    request.setUpdateUserInfoRequest(r);
   }else if (req.params.suffix === ADD_ADDRESS_API_SUFFIX) {
     console.log("========add address ===========");
     let r = new protocol.Request.AddUserAddressRequest();
@@ -298,9 +308,85 @@ router.post(USER_INFO_API_PATH + '/:suffix', (req, res) => {
     r.setRecipientsPhone(req.body.recipientsPhone);
     r.setRecipientsAddress(req.body.recipientsAddress);
     request.setUpdateUserAddressRequest(r);
+  }else if (req.params.suffix === DELETE_ADDRESS_API_SUFFIX) {
+    console.log("========delete address ===========");
+    let r = new protocol.Request.DeleteUserAddressRequest();
+    r.setToken(req.cookies[Cookies.session]);
+    r.setId(req.body.id);
+    request.setDeleteUserAddressRequest(r);
   }else {
     console.log("ERROR: not supported path " + USER_INFO_API_PATH + req.params.suffix);
+    let errorMsg = new ErrorMessage(protocol.ResultCode.REQUEST_RESOURCE_NOT_FOUND, 
+                                    "request resource " + USER_INFO_API_PATH + req.params.suffix +
+                                    " not found").toObject();
   }
+
+  console.log("send request to Captain Server")
+  console.log("request: " + JSON.stringify(request.toObject()))
+
+  // send request to backend server
+  captainClient.post(request)
+  .then((response)=>{
+    // console.log("recieve response from Captain Server: " + JSON.stringify(response.toObject()))
+    let errorMsg = new ErrorMessage(response.getResult(), response.getErrorDescription()).toObject();
+    let result = {...errorMsg};
+    console.log("send response: " + JSON.stringify(result));
+    res.json(result);
+  })
+  .catch(err => {
+    console.log("handle response from Captain Server error: " + err);
+    let errorMsg = new ErrorMessage(protocol.ResultCode.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR");
+    console.log(errorMsg.toObject());
+    res.json(errorMsg.toObject());
+  })
+})
+
+router.delete(USER_ADDRESS_API_PATH, (req, res) => {
+  console.log("handle delete user address request(" + req.params.suffix + "): " + JSON.stringify(req.cookies));
+  // check input
+
+  // construct request
+  let request = new protocol.Request();
+  console.log("========delete address ===========");
+  let r = new protocol.Request.DeleteUserAddressRequest();
+  r.setToken(req.cookies[Cookies.session]);
+  r.setId(req.body.id);
+  request.setDeleteUserAddressRequest(r);
+
+  console.log("send request to Captain Server")
+  console.log("request: " + JSON.stringify(request.toObject()))
+
+  // send request to backend server
+  captainClient.post(request)
+  .then((response)=>{
+    // console.log("recieve response from Captain Server: " + JSON.stringify(response.toObject()))
+    let errorMsg = new ErrorMessage(response.getResult(), response.getErrorDescription()).toObject();
+    let result = {...errorMsg};
+    console.log("send response: " + JSON.stringify(result));
+    res.json(result);
+  })
+  .catch(err => {
+    console.log("handle response from Captain Server error: " + err);
+    let errorMsg = new ErrorMessage(protocol.ResultCode.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR");
+    console.log(errorMsg.toObject());
+    res.json(errorMsg.toObject());
+  })
+})
+
+
+router.post(USER_ADDRESS_API_PATH, (req, res) => {
+  console.log("handle add user address request(" + req.params.suffix + "): " + JSON.stringify(req.cookies));
+  // check input
+
+  // construct request
+  let request = new protocol.Request();
+  console.log("========add address ===========");
+  let r = new protocol.Request.AddUserAddressRequest();
+  r.setToken(req.cookies[Cookies.session]);
+  r.setRecipientsName(req.body.recipientsName);
+  r.setRecipientsPhone(req.body.recipientsPhone);
+  r.setRecipientsAddress(req.body.recipientsAddress);
+  request.setAddUserAddressRequest(r);
 
   console.log("send request to Captain Server")
   console.log("request: " + JSON.stringify(request.toObject()))

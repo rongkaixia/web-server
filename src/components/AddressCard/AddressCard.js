@@ -33,31 +33,56 @@ export default class AccountAddress extends Component {
     usernameError: null,
     phonenumError: null,
     addressError: null,
-    serverError: null
+    updateAddressError: null,
+    deleteModalIsOpen: false,
+    deleteAddressError: null
   };
 
-  openModal = (event) => {
+  openUpdateModal = (event) => {
     event.preventDefault();
-    console.log("openModal");
+    event.stopPropagation();
+    console.log("openUpdateModal");
     console.log("state: " + this.state.modalIsOpen);
     this.setState({modalIsOpen: true});
   }
 
-  afterOpenModal = (event) => {
-    // references are now sync'd and can be accessed.
+  openDeleteModel = (event) => {
     event.preventDefault();
-    console.log("afterOpenModal");
+    event.stopPropagation();
+    console.log("openDeleteModel");
+    this.setState({deleteModalIsOpen: true});
+  }
+
+  afterOpenDeleteModal = (event) => {
+    // references are now sync'd and can be accessed.
+    // event.preventDefault();
+    console.log("afterOpenDeleteModal");
+    console.log("state: " + this.state.deleteModalIsOpen);
+    // this.refs.subtitle.style.color = '#f00';
+  }
+
+  closeDeleteModel = (event) => {
+    event.preventDefault();
+    console.log("openDeleteModel");
+    this.setState({deleteModalIsOpen: false,
+                  deleteAddressError: null});
+  }
+
+  afterOpenUpdateModal = (event) => {
+    // references are now sync'd and can be accessed.
+    // event.preventDefault();
+    console.log("afterOpenUpdateModal");
     console.log("state: " + this.state.modalIsOpen);
     // this.refs.subtitle.style.color = '#f00';
   }
 
-  closeModal = (event) => {
+  closeUpdateModal = (event) => {
     event.preventDefault();
     this.setState({modalIsOpen: false,
                   usernameError: null,
                   phonenumError: null,
                   addressError: null,
-                  serverError: null});
+                  updateAddressError: null});
   }
 
   // componentWillReceiveProps(nextProps) {
@@ -69,10 +94,27 @@ export default class AccountAddress extends Component {
   //   }
   // }
 
+  handleDeleteAddress = (event) => {
+    event.preventDefault();
+    console.log('handle delete address');
+    const addressId = this.refs.addressId;
+    const authKey = this.refs.authKey;
+    this.props.delete({id: addressId.value, authKey: authKey.value})
+    .then(() => {
+      this.setState({deleteModalIsOpen: false});
+    })
+    .then(() => {
+      this.props.loadInfo();
+    })
+    .catch(err => {
+      this.setState({deleteAddressError: JSON.stringify(err)})
+    })  
+  }
+
   handleUpdateAddress = (event) => {
     event.preventDefault();
     console.log('handle add address');
-    const addressId = this.refs.addressId
+    const addressId = this.refs.addressId;
     const recipientsName = this.refs.recipientsName;
     if (Validation.empty(recipientsName.value)) {
       this.setState({usernameError: '收件人不能为空'});
@@ -96,12 +138,12 @@ export default class AccountAddress extends Component {
     }
     if (this.state.addressError) this.setState({addressError: null});
     const authKey = this.refs.authKey;
-    console.log("addressId: " + addressId.value);
     console.log("recipientName: " + recipientsName.value);
     console.log("recipientPhone: " + recipientsPhone.value);
     console.log("recipientAddress: " + recipientsAddress.value);
     let promise = []
-    if (!Validation.empty(addressId.value)) {
+    if (!Validation.empty(addressId) && !Validation.empty(addressId.value)) {
+      console.log("addressId: " + addressId.value);
       promise = this.props.update({id: addressId.value,
                                 recipientsName:recipientsName.value, 
                                 recipientsPhone:recipientsPhone.value, 
@@ -121,7 +163,7 @@ export default class AccountAddress extends Component {
       this.props.loadInfo();
     })
     .catch(err => {
-      this.setState({serverError: JSON.stringify(err)})
+      this.setState({updateAddressError: JSON.stringify(err)})
     })
     // const username = this.refs.username;
     // const password = this.refs.password;
@@ -135,21 +177,19 @@ export default class AccountAddress extends Component {
     const recipientsName = data ? data.recipientsName : null;
     const recipientsPhone = data ? data.recipientsPhone : null;
     const recipientsAddress = data ? data.recipientsAddress : null;
-    const addressId = data ? data.id : null
     return (
       <div>
         <Modal
           isOpen={this.state.modalIsOpen}
-          onAfterOpen={this.afterOpenModal}
-          onRequestClose={this.closeModal}
+          onAfterOpen={this.afterOpenUpdateModal}
+          onRequestClose={this.closeUpdateModal}
           style={customStyles} >
 
           <div>
-            <h4 ref="subtitle">添加收货地址 <button style={{float: 'right'}} onClick={this.closeModal}>X</button></h4>
+            <h4 ref="subtitle">添加收货地址 <button style={{float: 'right'}} onClick={this.closeUpdateModal.bind(this)}>X</button></h4>
           </div>
           <form className="login-form form-horizontal">
             <input name="utf8" ref="authKey" type="hidden" value={authKey.data} />
-            <input name="utf8" ref="addressId" type="hidden" value={addressId} />
             <div className="form-group">
               收件人
               {!recipientsName &&
@@ -180,9 +220,32 @@ export default class AccountAddress extends Component {
               {this.state.addressError &&
               <div>{this.state.addressError}</div>}
             </div>
-            {this.state.serverError &&
-            <div>{this.state.serverError}</div>}
-            <button className="btn btn-success" onClick={this.handleUpdateAddress}>保存</button>
+            {this.state.updateAddressError &&
+            <div>{this.state.updateAddressError}</div>}
+            <button className="btn btn-success" onClick={this.handleUpdateAddress.bind(this)}>保存</button>
+          </form>
+        </Modal>
+      </div>
+    );
+  }
+
+  renderDeleteAddressModal(data) {
+    const {authKey} =  this.props;
+    return (
+      <div>
+        <Modal
+          isOpen={this.state.deleteModalIsOpen}
+          onAfterOpen={this.afterOpenDeleteModal}
+          onRequestClose={this.closeDeleteModel}
+          style={customStyles} >
+
+          <div>
+            <h4 ref="subtitle">添加收货地址 <button style={{float: 'right'}} onClick={this.closeDeleteModel.bind(this)}>X</button></h4>
+          </div>
+          <form className="login-form form-horizontal">
+            <input name="utf8" ref="authKey" type="hidden" value={authKey.data} />
+            <div>删除该收货地址吗？</div>
+            <button className="btn btn-success" onClick={this.handleDeleteAddress.bind(this)}>确定</button>
           </form>
         </Modal>
       </div>
@@ -193,26 +256,32 @@ export default class AccountAddress extends Component {
     const styles = require('./AddressCard.scss');
     const {address} = this.props;
     const addressModal = this.renderAddressModal(address);
+    const deleteAddressModal = this.renderDeleteAddressModal(address);
     const plusIconPath = require('./plus.png');
+    const addressId = address ? address.id : null
 
     return (
       <div className={styles.AddressCard}>
-          <div className="col-md-3">
-            <div className={"panel panel-default"} style={{width:'250px', height:'180px'}} onClick={this.openModal}>
+          <div className="col-md-3" style={{width:'250px', height:'180px'}}>
+            <div className={"panel panel-default"} style={{height: '100%'}} onClick={this.openUpdateModal.bind(this)}>
               {!address &&
               <div style={{'padding-left': '35%', 'padding-top': '20%'}}>
                 <Image href="#" alt="25x25 pull-xs-left" src={plusIconPath} responsive rounded/>
               </div>}
               {address &&
-              <div className={"panel-heading"}>
+              <div className={"panel-heading"} style={{height: '20%'}}>
+                <input name="utf8" ref="addressId" type="hidden" value={addressId} />
                 <span>{address.recipientsName}</span><span>{address.recipientsPhone}</span>
               </div>}
-              {address &&<div className={"panel-body"}>
+              {address &&
+              <div className={"panel-body"} style={{height:'70%'}}>
                 {address.recipientsAddress}
               </div>}
+              {address && <div class="panel-footer" style={{height:'10%'}}><span onClick={this.openDeleteModel.bind(this)}>删除</span></div>}
             </div>
           </div>
         {addressModal}
+        {deleteAddressModal}
       </div>
     );
   }

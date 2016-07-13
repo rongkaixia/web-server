@@ -148,7 +148,7 @@ export function updatePassword(oldPassword, newPassword, authKey) {
 export function addUserAddress({recipientsName, recipientsPhone, recipientsAddress, authKey}) {
   return {
     types: [UPDATE_INFO, UPDATE_INFO_SUCCESS, UPDATE_INFO_FAIL],
-    promise: (client) => client.post('user/info/addressadd', {
+    promise: (client) => client.post('user/address', {
       // authenticity_token
       data: {
         recipientsName: recipientsName,
@@ -163,7 +163,7 @@ export function addUserAddress({recipientsName, recipientsPhone, recipientsAddre
 export function updateUserAddress({id, recipientsName, recipientsPhone, recipientsAddress, authKey}) {
   return {
     types: [UPDATE_INFO, UPDATE_INFO_SUCCESS, UPDATE_INFO_FAIL],
-    promise: (client) => client.post('user/info/addressupdate', {
+    promise: (client) => client.put('user/address', {
       // authenticity_token
       data: {
         id: id,
@@ -179,7 +179,7 @@ export function updateUserAddress({id, recipientsName, recipientsPhone, recipien
 export function deleteUserAddress({id, authKey}) {
   return {
     types: [UPDATE_INFO, UPDATE_INFO_SUCCESS, UPDATE_INFO_FAIL],
-    promise: (client) => client.post('user/info/addressdelete', {
+    promise: (client) => client.del('user/address', {
       // authenticity_token
       data: {
         id: id,

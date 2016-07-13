@@ -21,10 +21,6 @@ import getRoutes from './routes';
 import captainRouter from './captainRouter';
 import {generateCsrfToken} from 'utils/AuthenticityToken'
 
-// console.log('Au=======');
-// console.log(Au);
-const protocol = require('../lib/protocol/com.echo.protocol_pb')
-
 const targetUrl = 'http://' + config.apiHost + ':' + config.apiPort;
 const pretty = new PrettyError();
 const app = new Express();
