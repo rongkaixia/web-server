@@ -76,12 +76,12 @@ class CApiClient {
             console.log("__SERVER__ set-cookie: " + response.get('set-cookie'));
             res.set('set-cookie', response.get('set-cookie'));
           }
-          let body = response.body;
           if (err) {
             console.log("ApiClient recieve error: " + err);
             let errorMsg = new ErrorMessage(protocol.ResultCode.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR");
             reject(errorMsg);
           }
+          let body = response.body;
           if (body && body.errorCode) {
             reject(body);
           }else {
