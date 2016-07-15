@@ -30,7 +30,7 @@ class CApiClient {
     methods.forEach((method) =>
       this[method] = (path, { params, data} = {}) => new Promise((resolve, reject) => {
         const request = superagent[method](formatUrl(path));
-        console.log('ApiClient path: ' + path);
+        console.log('ApiClient path: ' + formatUrl(path));
         if (!__SERVER__) {
           console.log('request cookie: ' + document.cookie);
         }

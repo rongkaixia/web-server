@@ -35,13 +35,8 @@ const customStyles = {
 @connect((state =>  ({user: state.userInfo.user,
                       authKey: state.reduxAsyncConnect.accountAddressAuthKey,
                       loadInfoError: state.userInfo.loadInfoError,
-                      loadInfoErrorDesc: state.userInfo.loadInfoErrorDesc,
-                      updateInfoError: state.userInfo.updateInfoError,
-                      updateInfoErrorDesc: state.userInfo.updateInfoErrorDesc})),
+                      loadInfoErrorDesc: state.userInfo.loadInfoErrorDesc})),
         {loadInfo: userAction.loadInfo,
-        addAddress: userAction.addUserAddress,
-        updateAddress: userAction.updateUserAddress,
-        deleteAddress: userAction.deleteUserAddress,
         redirectTo: routeActions.push})
 export default class AccountAddress extends Component {
   static propTypes = {
@@ -68,10 +63,6 @@ export default class AccountAddress extends Component {
       user.addressarrayList.forEach((address) => {
         addressCards.push(
           <AddressCard 
-          loadInfo={loadInfo}
-          update={updateAddress} 
-          add={addAddress} 
-          delete={deleteAddress} 
           address={address} 
           authKey={authKey} />
         );
@@ -79,10 +70,6 @@ export default class AccountAddress extends Component {
     }
     addressCards.push(
       <AddressCard 
-      loadInfo={loadInfo}
-      update={updateAddress} 
-      add={addAddress} 
-      delete={deleteAddress} 
       authKey={authKey} />
     );
     return (

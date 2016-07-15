@@ -16,7 +16,7 @@ const LOGIN_API_PATH = '/login';
 const LOGOUT_API_PATH = '/logout';
 const VALIDATE_TOKEN_API_PATH = '/auth';
 const USER_INFO_API_PATH = '/user/info';
-const USER_ADDRESS_API_PATH = '/user/address';
+const USER_ADDRESS_API_PATH = '/api/user/address';
 
 const USERNAME_API_SUFFIX = 'username';
 const PASSWORD_API_SUFFIX = 'password';
@@ -54,7 +54,7 @@ router.get('/api/form_token', (req, res) => {
   }
   console.log("/api/form_token::playload: " + JSON.stringify(playload));
   let token = generateCsrfToken(playload);
-  let result = {data: token};
+  let result = {data: token, value: token};
   res.json(result);
 })
 
@@ -291,29 +291,6 @@ router.post(USER_INFO_API_PATH + '/:suffix', (req, res) => {
     // r.setOldPassword(req.body.oldPassword);
     r.setDataList([data])
     request.setUpdateUserInfoRequest(r);
-  }else if (req.params.suffix === ADD_ADDRESS_API_SUFFIX) {
-    console.log("========add address ===========");
-    let r = new protocol.Request.AddUserAddressRequest();
-    r.setToken(req.cookies[Cookies.session]);
-    r.setRecipientsName(req.body.recipientsName);
-    r.setRecipientsPhone(req.body.recipientsPhone);
-    r.setRecipientsAddress(req.body.recipientsAddress);
-    request.setAddUserAddressRequest(r);
-  }else if (req.params.suffix === UPDATE_ADDRESS_API_SUFFIX) {
-    console.log("========update address ===========");
-    let r = new protocol.Request.UpdateUserAddressRequest();
-    r.setToken(req.cookies[Cookies.session]);
-    r.setId(req.body.id);
-    r.setRecipientsName(req.body.recipientsName);
-    r.setRecipientsPhone(req.body.recipientsPhone);
-    r.setRecipientsAddress(req.body.recipientsAddress);
-    request.setUpdateUserAddressRequest(r);
-  }else if (req.params.suffix === DELETE_ADDRESS_API_SUFFIX) {
-    console.log("========delete address ===========");
-    let r = new protocol.Request.DeleteUserAddressRequest();
-    r.setToken(req.cookies[Cookies.session]);
-    r.setId(req.body.id);
-    request.setDeleteUserAddressRequest(r);
   }else {
     console.log("ERROR: not supported path " + USER_INFO_API_PATH + req.params.suffix);
     let errorMsg = new ErrorMessage(protocol.ResultCode.REQUEST_RESOURCE_NOT_FOUND, 
@@ -387,6 +364,42 @@ router.post(USER_ADDRESS_API_PATH, (req, res) => {
   r.setRecipientsPhone(req.body.recipientsPhone);
   r.setRecipientsAddress(req.body.recipientsAddress);
   request.setAddUserAddressRequest(r);
+
+  console.log("send request to Captain Server")
+  console.log("request: " + JSON.stringify(request.toObject()))
+
+  // send request to backend server
+  captainClient.post(request)
+  .then((response)=>{
+    // console.log("recieve response from Captain Server: " + JSON.stringify(response.toObject()))
+    let errorMsg = new ErrorMessage(response.getResult(), response.getErrorDescription()).toObject();
+    let result = {...errorMsg};
+    console.log("send response: " + JSON.stringify(result));
+    res.json(result);
+  })
+  .catch(err => {
+    console.log("handle response from Captain Server error: " + err);
+    let errorMsg = new ErrorMessage(protocol.ResultCode.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR");
+    console.log(errorMsg.toObject());
+    res.json(errorMsg.toObject());
+  })
+})
+
+
+router.put(USER_ADDRESS_API_PATH, (req, res) => {
+  console.log("handle modify user address request(" + req.params.suffix + "): " + JSON.stringify(req.cookies));
+  // check input
+
+  // construct request
+  let request = new protocol.Request();
+  console.log("========modify address ===========");
+  let r = new protocol.Request.UpdateUserAddressRequest();
+  r.setToken(req.cookies[Cookies.session]);
+  r.setId(req.body.id);
+  r.setRecipientsName(req.body.recipientsName);
+  r.setRecipientsPhone(req.body.recipientsPhone);
+  r.setRecipientsAddress(req.body.recipientsAddress);
+  request.setUpdateUserAddressRequest(r);
 
   console.log("send request to Captain Server")
   console.log("request: " + JSON.stringify(request.toObject()))

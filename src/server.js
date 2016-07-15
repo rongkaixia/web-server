@@ -68,6 +68,10 @@ proxy.on('error', (error, req, res) => {
 app.use(captainRouter);
 
 app.use((req, res) => {
+  console.log("*************In normal app use((req,res)=>{...})***************")
+  console.log("baseurl: " + req.baseUrl)
+  console.log("path: " + req.path)
+  console.log("query: " + req.query)
   if (__DEVELOPMENT__) {
     // Do not cache webpack stats: the script file would change since
     // hot module replacement is enabled in the development env
