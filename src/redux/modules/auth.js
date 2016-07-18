@@ -120,7 +120,7 @@ export function login(username, password, authKey) {
       data: {
         username: username,
         password: password,
-        authKey: authKey
+        _csrf: authKey
       }
     })
   };
@@ -131,7 +131,7 @@ export function logout(authKey) {
     types: [LOGOUT, LOGOUT_SUCCESS, LOGOUT_FAIL],
     promise: (client) => client.post('/logout', {
       data: {
-        authKey: authKey
+        _csrf: authKey
       }
     })
   };
@@ -145,7 +145,7 @@ export function signup(username, password, authKey) {
       data: {
         username: username,
         password: password,
-        authKey: authKey
+        _csrf: authKey
       }
     })
   };

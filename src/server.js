@@ -17,12 +17,16 @@ import { ReduxAsyncConnect, loadOnServer } from 'redux-async-connect';
 import createHistory from 'react-router/lib/createMemoryHistory';
 import {Provider} from 'react-redux';
 import BodyParser from 'body-parser';
+import CookieParser from 'cookie-parser';
 import getRoutes from './routes';
 import captainRouter from './captainRouter';
-import {generateCsrfToken} from 'utils/AuthenticityToken'
+import {generateCsrfToken} from 'utils/AuthenticityToken';
+import csurf from 'csurf';
+import {load as loadCsrfToken} from './redux/modules/csrf';
 
 const targetUrl = 'http://' + config.apiHost + ':' + config.apiPort;
 const pretty = new PrettyError();
+const csrfProtection = csurf({ cookie: true })
 const app = new Express();
 const server = new http.Server(app);
 const proxy = httpProxy.createProxyServer({
@@ -30,6 +34,10 @@ const proxy = httpProxy.createProxyServer({
   ws: true
 });
 
+app.use(CookieParser())
+app.use(BodyParser.json()); // for parsing application/json
+app.use(BodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(csrfProtection)
 app.use(compression());
 app.use(favicon(path.join(__dirname, '..', 'static', 'favicon.ico')));
 
@@ -81,6 +89,9 @@ app.use((req, res) => {
   const history = createHistory(req.originalUrl);
 
   const store = createStore(history, client);
+
+  // load csrf token into store
+  store.dispatch(loadCsrfToken(req.csrfToken()));
 
   function hydrateOnClient() {
     res.send('<!doctype html>\n' +

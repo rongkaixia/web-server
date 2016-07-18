@@ -25,15 +25,8 @@ const customStyles = {
     return dispatch(userAction.loadInfo());
     // return loadInfo();
   }
-},{
-  key: 'accountAddressAuthKey',
-  promise: ({store: {dispatch, getState}, helpers: {client}}) => {
-    return client.get('/api/form_token');
-    // return new ApiClient().get('/api/form_token')
-  }
 }])
 @connect((state =>  ({user: state.userInfo.user,
-                      authKey: state.reduxAsyncConnect.accountAddressAuthKey,
                       loadInfoError: state.userInfo.loadInfoError,
                       loadInfoErrorDesc: state.userInfo.loadInfoErrorDesc})),
         {loadInfo: userAction.loadInfo,
@@ -56,21 +49,18 @@ export default class AccountAddress extends Component {
   render() {
     const styles = require('./AccountAddress.scss');
     const {leftPanel, rightPanel} = require('../UserCenter/UserCenter.scss');
-    const {user, loadInfo, authKey, addAddress, updateAddress, deleteAddress} = this.props;
+    const {user, loadInfo, addAddress, updateAddress, deleteAddress} = this.props;
     // const address = {id: '1111', username: '小明', phonenum: '15002029322', address: "深圳市南山区鸿瑞花园4-702"}
     let addressCards = [];
     if (user.addressarrayList) {
       user.addressarrayList.forEach((address) => {
         addressCards.push(
-          <AddressCard 
-          address={address} 
-          authKey={authKey} />
+          <AddressCard address={address}/>
         );
       })
     }
     addressCards.push(
-      <AddressCard 
-      authKey={authKey} />
+      <AddressCard />
     );
     return (
       <div className={'container'}>

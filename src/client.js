@@ -19,20 +19,20 @@ const history = useScroll(() => browserHistory)();
 const dest = document.getElementById('content');
 const store = createStore(history, client, window.__data);
 
-function initSocket() {
-  const socket = io('', {path: '/ws'});
-  socket.on('news', (data) => {
-    console.log(data);
-    socket.emit('my other event', { my: 'data from client' });
-  });
-  socket.on('msg', (data) => {
-    console.log(data);
-  });
+// function initSocket() {
+//   const socket = io('', {path: '/ws'});
+//   socket.on('news', (data) => {
+//     console.log(data);
+//     socket.emit('my other event', { my: 'data from client' });
+//   });
+//   socket.on('msg', (data) => {
+//     console.log(data);
+//   });
 
-  return socket;
-}
+//   return socket;
+// }
 
-global.socket = initSocket();
+// global.socket = initSocket();
 
 /**
  * 这里一定要用ReduxAsyncConnect，因为router的时候都在客服端，如果没用的话，子部件的asyncConnect将不起作用。

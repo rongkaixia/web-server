@@ -6,18 +6,11 @@ import * as authActions from 'redux/modules/auth';
 import Helmet from 'react-helmet';
 
 /* eslint-disable */ 
-@asyncConnect([{
-  key: 'signupAuthKey',
-  promise: ({store: {dispatch, getState}, helpers: {client}}) => {
-    return client.get('/api/form_token');
-    // return new ApiClient().get('/api/form_token')
-  }
-}])
 @connect(
   state => ({signingUp: state.auth.signingUp,
             signupError: state.auth.signupError,
             signupErrorDesc: state.auth.signupErrorDesc,
-            signupAuthKey: state.reduxAsyncConnect.signupAuthKey}),
+            authKey: state.csrf._csrf}),
   {...authActions, redirectTo: routeActions.push}
 )
 
@@ -26,7 +19,7 @@ export default class Signup extends Component {
     signingUp: PropTypes.object,
     signupError: PropTypes.object,
     signupErrorDesc: PropTypes.object,
-    signupAuthKey: PropTypes.object,
+    authKey: PropTypes.string,
     signup: PropTypes.func.isRequired,
     redirectTo: PropTypes.func.isRequired
   };
@@ -51,7 +44,7 @@ export default class Signup extends Component {
   }
 
   render() {
-    const {signupError, signupAuthKey, signupErrorDesc} = this.props;
+    const {signupError, authKey, signupErrorDesc} = this.props;
     const styles = require('./Signup.scss');
     return (
       <div className={styles.signupPage + ' container'}>
@@ -65,7 +58,7 @@ export default class Signup extends Component {
             <div className="form-group">
               <input type="password" ref="password" placeholder="Enter a password"/>
             </div>
-            <input name="utf8" ref="authKey" type="hidden" value={signupAuthKey.data} />
+            <input name="utf8" ref="authKey" type="hidden" value={authKey} />
             <p>{signupError ? signupErrorDesc : ''}</p>
             <button className="btn btn-success" onClick={this.handleSubmit}><i className="fa fa-sign-in"/>{' '}注册
             </button>

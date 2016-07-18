@@ -99,7 +99,7 @@ export function updateUsername(newUsername, authKey) {
       // authenticity_token
       data: {
         newUsername: newUsername,
-        authKey: authKey
+        _csrf: authKey
       }
     })
   };
@@ -112,7 +112,7 @@ export function updateEmail(newEmail, authKey) {
       // authenticity_token
       data: {
         newEmail: newEmail,
-        authKey: authKey
+        _csrf: authKey
       }
     })
   };
@@ -125,7 +125,7 @@ export function updatePhonenum(newPhonenum, authKey) {
       // authenticity_token
       data: {
         newPhonenum: newPhonenum,
-        authKey: authKey
+        _csrf: authKey
       }
     })
   };
@@ -139,7 +139,7 @@ export function updatePassword(oldPassword, newPassword, authKey) {
       data: {
         oldPassword: oldPassword,
         newPassword: newPassword,
-        authKey: authKey
+        _csrf: authKey
       }
     })
   };
@@ -154,7 +154,7 @@ export function addUserAddress({recipientsName, recipientsPhone, recipientsAddre
         recipientsName: recipientsName,
         recipientsPhone: recipientsPhone,
         recipientsAddress: recipientsAddress,
-        authKey: authKey
+        _csrf: authKey
       }
     })
   };
@@ -170,7 +170,7 @@ export function updateUserAddress({id, recipientsName, recipientsPhone, recipien
         recipientsName: recipientsName,
         recipientsPhone: recipientsPhone,
         recipientsAddress: recipientsAddress,
-        authKey: authKey
+        _csrf: authKey
       }
     })
   };
@@ -183,7 +183,7 @@ export function deleteUserAddress({id, authKey}) {
       // authenticity_token
       data: {
         id: id,
-        authKey: authKey
+        _csrf: authKey
       }
     })
   };

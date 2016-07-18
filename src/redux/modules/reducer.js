@@ -8,6 +8,7 @@ import counter from './counter';
 import {reducer as form} from 'redux-form';
 import info from './info';
 import userInfo from './userInfo';
+import csrf from './csrf';
 import widgets from './widgets';
 
 // console.log("formAuth: " + formAuth);
@@ -18,6 +19,7 @@ export default combineReducers({
   auth,
   userInfo,
   form,
+  csrf,
   multireducer: multireducer({
     counter1: counter,
     counter2: counter,

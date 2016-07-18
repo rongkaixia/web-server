@@ -20,7 +20,8 @@ const customStyles = {
 /* eslint-disable */
 @connect((state =>  ({addressForm: state.form.address,
                       updateInfoError: state.userInfo.updateInfoError,
-                      updateInfoErrorDesc: state.userInfo.updateInfoErrorDesc})),
+                      updateInfoErrorDesc: state.userInfo.updateInfoErrorDesc,
+                      authKey: state.csrf._csrf})),
         {loadInfo: userAction.loadInfo,
         addAddress: userAction.addUserAddress,
         updateAddress: userAction.updateUserAddress,
@@ -34,7 +35,7 @@ export default class AccountAddress extends Component {
     addAddress: PropTypes.func.isRequired,
     updateAddress: PropTypes.func.isRequired,
     deleteAddress: PropTypes.func.isRequired,
-    authKey: PropTypes.object.isRequired
+    authKey: PropTypes.string.isRequired
   };
 
   state = {
@@ -127,7 +128,7 @@ export default class AccountAddress extends Component {
       console.log("recipientName: " + recipientsName.value);
       console.log("recipientPhone: " + recipientsPhone.value);
       console.log("recipientAddress: " + recipientsAddress.value);
-      console.log("authKey: " + authKey.value);
+      console.log("authKey: " + authKey);
       let promise = []
       if (!Validation.empty(addressId) && !Validation.empty(addressId.value)) {
         console.log("addressId: " + addressId.value);
@@ -135,12 +136,12 @@ export default class AccountAddress extends Component {
                                   recipientsName:recipientsName.value, 
                                   recipientsPhone:recipientsPhone.value, 
                                   recipientsAddress:recipientsAddress.value, 
-                                  authKey: authKey.value})
+                                  authKey: authKey})
       } else {
         promise = this.props.addAddress({recipientsName:recipientsName.value, 
                                   recipientsPhone:recipientsPhone.value, 
                                   recipientsAddress:recipientsAddress.value, 
-                                  authKey: authKey.value})
+                                  authKey: authKey})
       }
       promise
       .then(() => {
@@ -157,7 +158,7 @@ export default class AccountAddress extends Component {
   }
 
   renderAddressModal(data) {
-    const {authKey, update, add, loadInfo} =  this.props;
+    const {authKey} =  this.props;
     const initialValues = {id: data ? data.id : null, 
                           recipientsName: data ? data.recipientsName : null, 
                           recipientsPhone: data ? data.recipientsPhone : null,
@@ -194,7 +195,7 @@ export default class AccountAddress extends Component {
             <h4 ref="subtitle">添加收货地址 <button style={{float: 'right'}} onClick={this.closeDeleteModel.bind(this)}>X</button></h4>
           </div>
           <form className="login-form form-horizontal">
-            <input name="utf8" ref="authKey" type="hidden" value={authKey.data} />
+            <input name="utf8" ref="authKey" type="hidden" value={authKey} />
             <div>删除该收货地址吗？</div>
             <button className="btn btn-success" onClick={this.handleDeleteAddress.bind(this)}>确定</button>
           </form>

@@ -7,19 +7,11 @@ import { routeActions } from 'react-router-redux';
 import * as authActions from 'redux/modules/auth';
 
 /* eslint-disable */ 
-@asyncConnect([{
-  key: 'logoutAuthKey',
-  promise: ({store: {dispatch, getState}, helpers: {client}}) => {
-    return client.get('/api/form_token');
-    // return new ApiClient().get('/api/form_token')
-  }
-}])
 @connect(
   state => ({user: state.userInfo.user,
-            location: state.routing.location,
             logoutError: state.auth.logoutError,
             logoutErrorDesc: state.auth.logoutErrorDesc,
-            logoutAuthKey: state.reduxAsyncConnect.logoutAuthKey}),
+            authKey: state.csrf._csrf}),
   {...authActions, redirectTo: routeActions.push}
 )
 export default class Logout extends Component {
@@ -28,9 +20,7 @@ export default class Logout extends Component {
     logout: PropTypes.func,
     logoutError: PropTypes.object,
     logoutErrorDesc: PropTypes.object,
-    logoutAuthKey: PropTypes.object,
-    load: PropTypes.func,
-    location: PropTypes.object,
+    authKey: PropTypes.string,
     redirectTo: PropTypes.func.isRequired
   };
 
@@ -54,10 +44,10 @@ export default class Logout extends Component {
   }
 
   render() {
-    const {user, logoutAuthKey, logout, logoutError, logoutErrorDesc} = this.props;
+    const {user, authKey, logout, logoutError, logoutErrorDesc} = this.props;
     const styles = require('./Logout.scss');
-    console.log("===========logoutAuthKey=========");
-    console.log(logoutAuthKey);
+    console.log("===========authKey=========");
+    console.log(authKey);
     return (
       <div className={styles.loginPage + ' container'}>
         <Helmet title="Login"/>
@@ -67,7 +57,7 @@ export default class Logout extends Component {
           <p>You are currently logged in as {user.usename}.</p>
           <div>
             <form>
-              <input name="utf8" ref="authKey" type="hidden" value={logoutAuthKey.data} />
+              <input name="utf8" ref="authKey" type="hidden" value={authKey} />
             </form>
             <button className="btn btn-danger" onClick={this.handleLogout}><i className="fa fa-sign-out"/>{' '}Log Out</button>
           </div>

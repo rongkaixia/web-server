@@ -29,29 +29,18 @@ const customStyles = {
     return dispatch(userAction.loadInfo());
     // return loadInfo();
   }
-},{
-  key: 'accountInfoAuthKey',
-  promise: ({store: {dispatch, getState}, helpers: {client}}) => {
-    return client.get('/api/form_token');
-    // return new ApiClient().get('/api/form_token')
-  }
 }])
 @connect((state =>  ({user: state.userInfo.user,
-                      accountInfoAuthKey: state.reduxAsyncConnect.accountInfoAuthKey,
+                      csrfToken: state.csrf._csrf,
                       loadInfoError: state.userInfo.loadInfoError,
                       loadInfoErrorDesc: state.userInfo.loadInfoErrorDesc,
                       updateInfoError: state.userInfo.updateInfoError,
                       updateInfoErrorDesc: state.userInfo.updateInfoErrorDesc})),
-        {loadInfo: userAction.loadInfo, 
-        updateUsername: userAction.updateUsername, 
-        updatePhonenum: userAction.updatePhonenum, 
-        updateEmail: userAction.updateEmail, 
-        updatePassword: userAction.updatePassword, 
-        redirectTo: routeActions.push})
+        {...userAction, redirectTo: routeActions.push})
 export default class AccountInfo extends Component {
   static propTypes = {
     user: PropTypes.object,
-    accountInfoAuthKey: PropTypes.object,
+    csrfToken: PropTypes.string,
     loadInfoError: PropTypes.object,
     loadInfoErrorDesc: PropTypes.object,
     updateInfoError: PropTypes.object,
@@ -392,7 +381,7 @@ export default class AccountInfo extends Component {
     const emailIconPath = require('./email.png');
     const phoneIconPath = require('./phone.png');
     const questionIconPath = require('./securityQuestion.png');
-    const {accountInfoAuthKey} = this.props;
+    const {csrfToken} = this.props;
 
     if (!user) {
       return (<div></div>);
@@ -400,7 +389,7 @@ export default class AccountInfo extends Component {
       return (
         <div className={styles.InfoPanel}>
           个人信息
-          <input name="utf8" ref="authKey" type="hidden" value={accountInfoAuthKey.data} />
+          <input name="utf8" ref="authKey" type="hidden" value={csrfToken} />
           <div className="row">
             <div className="col-md-2">
               <Image href="#" alt="200x200 pull-xs-left" src={userImagePath} responsive rounded/>

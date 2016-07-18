@@ -7,20 +7,13 @@ import { routeActions } from 'react-router-redux';
 import * as authActions from 'redux/modules/auth';
 
 
-/* eslint-disable */ 
-@asyncConnect([{
-  key: 'loginAuthKey',
-  promise: ({store: {dispatch, getState}, helpers: {client}}) => {
-    return client.get('/api/form_token');
-    // return new ApiClient().get('/api/form_token')
-  }
-}])
+/* eslint-disable */
 @connect(
   state => ({user: state.userInfo.user,
   					location: state.routing.location,
 						loginError: state.auth.loginError,
 						loginErrorDesc: state.auth.loginErrorDesc,
-						loginAuthKey: state.reduxAsyncConnect.loginAuthKey}),
+						authKey: state.csrf._csrf}),
   {...authActions, redirectTo: routeActions.push}
 )
 export default class Login extends Component {
@@ -29,8 +22,7 @@ export default class Login extends Component {
     login: PropTypes.func,
     loginError: PropTypes.object,
     loginErrorDesc: PropTypes.object,
-    loginAuthKey: PropTypes.object,
-    load: PropTypes.func,
+    authKey: PropTypes.string,
     location: PropTypes.object,
     redirectTo: PropTypes.func.isRequired
   };
@@ -62,11 +54,11 @@ export default class Login extends Component {
   }
 
   render() {
-    const {user, loginAuthKey, loginError, loginErrorDesc} = this.props;
+    const {user, authKey, loginError, loginErrorDesc} = this.props;
     const styles = require('./Login.scss');
-    console.log("===========loginAuthKey=========");
-    console.log(loginAuthKey);
-    // const authKey = generateCsrfToken();
+    console.log("===========authKey=========");
+    console.log(authKey);
+    // const authKey = generateauthKey();
     return (
       <div className={styles.loginPage + ' container'}>
         <Helmet title="Login"/>
@@ -80,7 +72,7 @@ export default class Login extends Component {
             <div className="form-group form-inline">
               <input type="password" ref="password" placeholder="Enter a password" className="form-control"/>
             </div>
-	          <input name="utf8" ref="authKey" type="hidden" value={loginAuthKey.data} />
+	          <input name="utf8" ref="authKey" type="hidden" value={authKey} />
             <p>{loginError ? loginErrorDesc : ''}</p>
             <button className="btn btn-success" onClick={this.handleSubmit}><i className="fa fa-sign-in"/>{' '}Log In
             </button>
