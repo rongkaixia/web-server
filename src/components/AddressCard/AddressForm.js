@@ -29,7 +29,6 @@ const validate = values => {
 })
 export default class AccountAddress extends Component {
   static propTypes = {
-    authKey: PropTypes.string.isRequired,
     handleSubmit: PropTypes.func.isRequired,
     handleClose: PropTypes.func.isRequired,
     initialValues: PropTypes.object
@@ -45,14 +44,12 @@ export default class AccountAddress extends Component {
   // }
   render() {
     const {fields: {id, recipientsName, recipientsPhone, recipientsAddress, serverError}, 
-          authKey,
           handleClose,
           handleSubmit} =  this.props;
     return (
       <div>
         <h4 ref="subtitle">添加收货地址 <button style={{float: 'right'}} onClick={handleClose}>X</button></h4>
         <form className="login-form form-horizontal" onSubmit={handleSubmit}>
-          <input name="utf8" ref="authKey" type="hidden" value={authKey} />
           <div className="form-group">
             <label>收件人</label>
             <input type="text" placeholder="长度不超过12个字" {...recipientsName}/>

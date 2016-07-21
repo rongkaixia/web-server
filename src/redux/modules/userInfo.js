@@ -2,6 +2,7 @@ import {LOAD_SUCCESS as LOAD_AUTH_SUCCESS,
         LOGIN_SUCCESS,
         LOGOUT_SUCCESS,
         SIGNUP_SUCCESS} from './auth';
+import API from 'api/api'
 
 const LOAD_INFO = 'redux-example/userInfo/LOAD_INFO';
 const LOAD_INFO_SUCCESS = 'redux-example/userInfo/LOAD_INFO_SUCCESS';
@@ -24,6 +25,11 @@ export default function reducer(state = initialState, action = {}) {
         user: action.data.userId ? action.data : null
       }
     case LOGIN_SUCCESS:
+      return {
+        ...state,
+        user: action.data.userId ? action.data : null
+      }
+    case SIGNUP_SUCCESS:
       return {
         ...state,
         user: action.data.userId ? action.data : null
@@ -88,15 +94,14 @@ export default function reducer(state = initialState, action = {}) {
 export function loadInfo() {
   return {
     types: [LOAD_INFO, LOAD_INFO_SUCCESS, LOAD_INFO_FAIL],
-    promise: (client) => client.get('user/info')
+    promise: (client) => client.get(API.USER_INFO_API_PATH)
   };
 }
 
 export function updateUsername(newUsername, authKey) {
   return {
     types: [UPDATE_INFO, UPDATE_INFO_SUCCESS, UPDATE_INFO_FAIL],
-    promise: (client) => client.post('user/info/username', {
-      // authenticity_token
+    promise: (client) => client.post(API.USER_INFO_API_PATH + '/' + API.USER_INFO_API_USERNAME_SUFFIX, {
       data: {
         newUsername: newUsername,
         _csrf: authKey
@@ -108,8 +113,7 @@ export function updateUsername(newUsername, authKey) {
 export function updateEmail(newEmail, authKey) {
   return {
     types: [UPDATE_INFO, UPDATE_INFO_SUCCESS, UPDATE_INFO_FAIL],
-    promise: (client) => client.post('user/info/email', {
-      // authenticity_token
+    promise: (client) => client.post(API.USER_INFO_API_PATH + '/' + API.USER_INFO_API_EMAIL_SUFFIX, {
       data: {
         newEmail: newEmail,
         _csrf: authKey
@@ -121,8 +125,7 @@ export function updateEmail(newEmail, authKey) {
 export function updatePhonenum(newPhonenum, authKey) {
   return {
     types: [UPDATE_INFO, UPDATE_INFO_SUCCESS, UPDATE_INFO_FAIL],
-    promise: (client) => client.post('user/info/phonenum', {
-      // authenticity_token
+    promise: (client) => client.post(API.USER_INFO_API_PATH + '/' + API.USER_INFO_API_PHONENYM_SUFFIX, {
       data: {
         newPhonenum: newPhonenum,
         _csrf: authKey
@@ -134,8 +137,7 @@ export function updatePhonenum(newPhonenum, authKey) {
 export function updatePassword(oldPassword, newPassword, authKey) {
   return {
     types: [UPDATE_INFO, UPDATE_INFO_SUCCESS, UPDATE_INFO_FAIL],
-    promise: (client) => client.post('user/info/password', {
-      // authenticity_token
+    promise: (client) => client.post(API.USER_INFO_API_PATH + '/' + API.USER_INFO_API_PASSWORD_SUFFIX, {
       data: {
         oldPassword: oldPassword,
         newPassword: newPassword,
@@ -148,7 +150,7 @@ export function updatePassword(oldPassword, newPassword, authKey) {
 export function addUserAddress({recipientsName, recipientsPhone, recipientsAddress, authKey}) {
   return {
     types: [UPDATE_INFO, UPDATE_INFO_SUCCESS, UPDATE_INFO_FAIL],
-    promise: (client) => client.post('api/user/address', {
+    promise: (client) => client.post(API.USER_ADDRESS_API_PATH, {
       // authenticity_token
       data: {
         recipientsName: recipientsName,
@@ -163,7 +165,7 @@ export function addUserAddress({recipientsName, recipientsPhone, recipientsAddre
 export function updateUserAddress({id, recipientsName, recipientsPhone, recipientsAddress, authKey}) {
   return {
     types: [UPDATE_INFO, UPDATE_INFO_SUCCESS, UPDATE_INFO_FAIL],
-    promise: (client) => client.put('api/user/address', {
+    promise: (client) => client.put(API.USER_ADDRESS_API_PATH, {
       // authenticity_token
       data: {
         id: id,
@@ -179,7 +181,7 @@ export function updateUserAddress({id, recipientsName, recipientsPhone, recipien
 export function deleteUserAddress({id, authKey}) {
   return {
     types: [UPDATE_INFO, UPDATE_INFO_SUCCESS, UPDATE_INFO_FAIL],
-    promise: (client) => client.del('api/user/address', {
+    promise: (client) => client.del(API.USER_ADDRESS_API_PATH, {
       // authenticity_token
       data: {
         id: id,

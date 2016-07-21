@@ -31,7 +31,7 @@ const customStyles = {
   }
 }])
 @connect((state =>  ({user: state.userInfo.user,
-                      csrfToken: state.csrf._csrf,
+                      authKey: state.csrf._csrf,
                       loadInfoError: state.userInfo.loadInfoError,
                       loadInfoErrorDesc: state.userInfo.loadInfoErrorDesc,
                       updateInfoError: state.userInfo.updateInfoError,
@@ -40,7 +40,7 @@ const customStyles = {
 export default class AccountInfo extends Component {
   static propTypes = {
     user: PropTypes.object,
-    csrfToken: PropTypes.string,
+    authKey: PropTypes.string,
     loadInfoError: PropTypes.object,
     loadInfoErrorDesc: PropTypes.object,
     updateInfoError: PropTypes.object,
@@ -135,9 +135,9 @@ export default class AccountInfo extends Component {
   handleModifyUsername = (event) => {
     console.log("handleModifyUsername");
     event.preventDefault();
+    const {authKey} = this.props;
     const username = this.refs.username;
-    const authKey = this.refs.authKey;
-    this.props.updateUsername(username.value, authKey.value).then(this.props.loadInfo);
+    this.props.updateUsername(username.value, authKey).then(this.props.loadInfo);
     this.setState({isUserModalOpen: false});
     // this.props.signup(username.value, password.value);
     // username.value = '';
@@ -146,10 +146,10 @@ export default class AccountInfo extends Component {
   handleModifyPassword = (event) => {
     console.log("handleModifyPassword");
     event.preventDefault();
+    const {authKey} = this.props;
     const oldPassword = this.refs.oldPassword;
     const newPassword = this.refs.newPassword;
-    const authKey = this.refs.authKey;
-    this.props.updatePassword(oldPassword.value, newPassword.value, authKey.value)
+    this.props.updatePassword(oldPassword.value, newPassword.value, authKey)
     .then(() => {
       this.props.loadInfo();
       this.setState({isPasswordModalOpen: false});
@@ -166,9 +166,9 @@ export default class AccountInfo extends Component {
   handleModifyEmail = (event) => {
     console.log("handleModifyEmail");
     event.preventDefault();
+    const {authKey} = this.props;
     const email = this.refs.email;
-    const authKey = this.refs.authKey;
-    this.props.updateEmail(email.value, authKey.value).then(this.props.loadInfo);
+    this.props.updateEmail(email.value, authKey).then(this.props.loadInfo);
     this.setState({isEmailModalOpen: false});
     // this.props.signup(username.value, password.value);
     // username.value = '';
@@ -177,9 +177,9 @@ export default class AccountInfo extends Component {
   handleModifyPhone = (event) => {
     console.log("handleModifyPhone");
     event.preventDefault();
+    const {authKey} = this.props;
     const phonenum = this.refs.phonenum;
-    const authKey = this.refs.authKey;
-    this.props.updatePhonenum(phonenum.value, authKey.value).then(this.props.loadInfo);
+    this.props.updatePhonenum(phonenum.value, authKey).then(this.props.loadInfo);
     this.setState({isPhoneModalOpen: false});
     // this.props.signup(username.value, password.value);
     // username.value = '';
@@ -188,6 +188,7 @@ export default class AccountInfo extends Component {
   handleModifyQuestion = (event) => {
     console.log("handleModifyQuestion");
     event.preventDefault();
+    const {authKey} = this.props;
     const username = this.refs.username;
     this.setState({isQuestionModalOpen: false});
     // this.props.signup(username.value, password.value);
@@ -389,7 +390,6 @@ export default class AccountInfo extends Component {
       return (
         <div className={styles.InfoPanel}>
           个人信息
-          <input name="utf8" ref="authKey" type="hidden" value={csrfToken} />
           <div className="row">
             <div className="col-md-2">
               <Image href="#" alt="200x200 pull-xs-left" src={userImagePath} responsive rounded/>

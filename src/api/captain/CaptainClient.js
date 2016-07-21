@@ -5,11 +5,11 @@ const protocol = require('../../../lib/protocol/protocol_pb')
 
 const methods = ['get', 'post', 'put', 'patch', 'del'];
 
-class CaptainClient {
+export default class CaptainClient {
   constructor(){
     this.host = 'http://' + config.captainHost + ':' + config.captainPort;
 
-    this.apiPath = "/api/v1.0"
+    this.apiPath = config.captainApiPath
 
     methods.forEach((method) =>
       this[method] = (data = {}) => new Promise((resolve, reject) => {
@@ -17,7 +17,8 @@ class CaptainClient {
         let request = {};
         let msg = {};
         try{
-          console.log("recieve request: data = " + JSON.stringify(data.toObject()));
+          if (process.env.NODE_ENV !== 'production')
+            console.log("recieve request: data = " + JSON.stringify(data.toObject()));
           request = superagent[method](self.host + this.apiPath);
           msg = self.serialize(data);
           if (process.env.NODE_ENV !== 'production') {
@@ -45,7 +46,8 @@ class CaptainClient {
             }catch(err){
               reject(err);
             }
-            console.log("CaptainClient: recieve response from Captain Server: " + JSON.stringify(response.toObject()));
+            if (process.env.NODE_ENV !== 'production')
+              console.log("CaptainClient: recieve response from Captain Server: " + JSON.stringify(response.toObject()));
             resolve(response);
           })
         })
@@ -78,5 +80,3 @@ class CaptainClient {
     return msg.getResponse();
   }
 }
-
-export default CaptainClient;

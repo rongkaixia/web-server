@@ -46,10 +46,10 @@ export default class Login extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
+    const {authKey} = this.props;
     const username = this.refs.username;
     const password = this.refs.password;
-    const authKey = this.refs.authKey;
-    this.props.login(username.value, password.value, authKey.value);
+    this.props.login(username.value, password.value, authKey);
     password.value = '';
   }
 
@@ -72,7 +72,6 @@ export default class Login extends Component {
             <div className="form-group form-inline">
               <input type="password" ref="password" placeholder="Enter a password" className="form-control"/>
             </div>
-	          <input name="utf8" ref="authKey" type="hidden" value={authKey} />
             <p>{loginError ? loginErrorDesc : ''}</p>
             <button className="btn btn-success" onClick={this.handleSubmit}><i className="fa fa-sign-in"/>{' '}Log In
             </button>

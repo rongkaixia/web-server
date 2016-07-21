@@ -39,7 +39,7 @@ export default (store) => {
     function checkAuth() {
       const { userInfo: { user }} = store.getState();
       if (user) {
-        // oops, not logged in, so can't be here!
+        // oops, logged in, so can't be here!
         replace('/');
       }
       cb();

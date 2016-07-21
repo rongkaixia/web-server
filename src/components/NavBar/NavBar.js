@@ -33,7 +33,7 @@ export default class NavBar extends Component {
     const {user, location} = this.props; // eslint-disable-line no-shadow
     const styles = require('./NavBar.scss');
     let returnTo = '';
-    if (location.pathname !== '/login') {
+    if (location.pathname !== '/login' && location.pathname !== '/signup') {
       const redirectPath = location.pathname + location.search;
       returnTo = '?' + Querystring.stringify({return_to: redirectPath});
     }
@@ -71,7 +71,7 @@ export default class NavBar extends Component {
                 <NavItem eventKey={5}>Login</NavItem>
               </LinkContainer>}
               {!user &&
-              <LinkContainer to="/signup">
+              <LinkContainer to={"/signup" + returnTo}>
                 <NavItem eventKey={7}>Signup</NavItem>
               </LinkContainer>}
               {user &&

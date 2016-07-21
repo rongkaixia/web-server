@@ -38,9 +38,9 @@ export default class Logout extends Component {
 
   handleLogout = (event) => {
     event.preventDefault();
-    const authKey = this.refs.authKey;
-    console.log("handleLogout authKey: " + authKey.value);
-    this.props.logout(authKey.value);
+    const {authKey} = this.props;
+    console.log("handleLogout authKey: " + authKey);
+    this.props.logout(authKey);
   }
 
   render() {
@@ -56,9 +56,6 @@ export default class Logout extends Component {
         <div>
           <p>You are currently logged in as {user.usename}.</p>
           <div>
-            <form>
-              <input name="utf8" ref="authKey" type="hidden" value={authKey} />
-            </form>
             <button className="btn btn-danger" onClick={this.handleLogout}><i className="fa fa-sign-out"/>{' '}Log Out</button>
           </div>
         </div>

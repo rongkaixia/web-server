@@ -2,27 +2,12 @@ import Express from 'express';
 import BodyParser from 'body-parser';
 import CookieParser from 'cookie-parser';
 import CaptainClient from 'api/captain/CaptainClient';
+import API from 'api/api';
 import ErrorMessage from './error';
 import Cookies from './cookies';
 // let protocol = require('protocol');
 const protocol = require('../lib/protocol/protocol_pb');
 const captainClient = new CaptainClient();
-
-const SIGNUP_API_PATH = '/signup';
-const LOGIN_API_PATH = '/login';
-const LOGOUT_API_PATH = '/logout';
-const VALIDATE_TOKEN_API_PATH = '/auth';
-const USER_INFO_API_PATH = '/user/info';
-const USER_ADDRESS_API_PATH = '/api/user/address';
-
-const USERNAME_API_SUFFIX = 'username';
-const PASSWORD_API_SUFFIX = 'password';
-const PHONENYM_API_SUFFIX = 'phonenum';
-const EMAIL_API_SUFFIX = 'email';
-
-const ADD_ADDRESS_API_SUFFIX = 'addressadd';
-const UPDATE_ADDRESS_API_SUFFIX = 'addressupdate';
-const DELETE_ADDRESS_API_SUFFIX = 'addressdelete';
 
 function checkPassword(password){
 	return true
@@ -49,7 +34,7 @@ let clearCookie = (req, res) => {
     res.cookie(Cookies.loggedIn, false);
 }
 
-router.post(SIGNUP_API_PATH, (req, res) => {
+router.post(API.SIGNUP_API_PATH, (req, res) => {
   console.log("handle signup request: " + req.body);
   // check input
   
@@ -73,6 +58,10 @@ router.post(SIGNUP_API_PATH, (req, res) => {
   	}else{
       let data = response.getSignupResponse().toObject();
   		result = {...result, ...errorMsg, ...{data:data}};
+      res.cookie(Cookies.username, data.username);
+      res.cookie(Cookies.session, data.token);
+      res.cookie(Cookies.userID, data.userId);
+      res.cookie(Cookies.loggedIn, true);
   	}
   	console.log("send response: " + JSON.stringify(result));
   	res.json(result);
@@ -85,7 +74,7 @@ router.post(SIGNUP_API_PATH, (req, res) => {
   })
 })
 
-router.post(LOGIN_API_PATH, (req, res) => {
+router.post(API.LOGIN_API_PATH, (req, res) => {
   console.log("handle login request: " + req.body);
   // check input
   
@@ -125,7 +114,7 @@ router.post(LOGIN_API_PATH, (req, res) => {
   })
 })
 
-router.get(VALIDATE_TOKEN_API_PATH, (req, res) => {
+router.get(API.VALIDATE_TOKEN_API_PATH, (req, res) => {
   console.log("handle validate token request: " + JSON.stringify(req.cookies));
   // check input
   
@@ -167,7 +156,7 @@ router.get(VALIDATE_TOKEN_API_PATH, (req, res) => {
   })
 })
 
-router.post(LOGOUT_API_PATH, (req, res) => {
+router.post(API.LOGOUT_API_PATH, (req, res) => {
   console.log("handle logout request: " + JSON.stringify(req.cookies));
   // check input
   
@@ -203,7 +192,7 @@ router.post(LOGOUT_API_PATH, (req, res) => {
   })
 })
 
-router.get(USER_INFO_API_PATH, (req, res) => {
+router.get(API.USER_INFO_API_PATH, (req, res) => {
   console.log("handle query user info request: " + JSON.stringify(req.cookies));
   // check input
   
@@ -238,32 +227,32 @@ router.get(USER_INFO_API_PATH, (req, res) => {
   })
 })
 
-router.post(USER_INFO_API_PATH + '/:suffix', (req, res) => {
+router.post(API.USER_INFO_API_PATH + '/:suffix', (req, res) => {
   console.log("handle update user info request(" + req.params.suffix + "): " + JSON.stringify(req.cookies));
   // check input
 
   // construct request
   let data = new protocol.Request.UpdateUserInfoRequest.UpdateData
   let request = new protocol.Request();
-  if (req.params.suffix === USERNAME_API_SUFFIX) {
+  if (req.params.suffix === API.USER_INFO_API_USERNAME_SUFFIX) {
     let r = new protocol.Request.UpdateUserInfoRequest();
     data.setUsername(req.body.newUsername);
     r.setToken(req.cookies[Cookies.session]);
     r.setDataList([data])
     request.setUpdateUserInfoRequest(r);
-  } else if (req.params.suffix === PHONENYM_API_SUFFIX) {
+  } else if (req.params.suffix === API.USER_INFO_API_PHONENYM_SUFFIX) {
     let r = new protocol.Request.UpdateUserInfoRequest();
     data.setPhonenum(req.body.newPhonenum);
     r.setToken(req.cookies[Cookies.session]);
     r.setDataList([data])
     request.setUpdateUserInfoRequest(r);
-  } else if (req.params.suffix === EMAIL_API_SUFFIX) {
+  } else if (req.params.suffix === API.USER_INFO_API_EMAIL_SUFFIX) {
     let r = new protocol.Request.UpdateUserInfoRequest();
     data.setEmail(req.body.newEmail);
     r.setToken(req.cookies[Cookies.session]);
     r.setDataList([data])
     request.setUpdateUserInfoRequest(r);
-  } else if (req.params.suffix === PASSWORD_API_SUFFIX) {
+  } else if (req.params.suffix === API.USER_INFO_API_PASSWORD_SUFFIX) {
     let r = new protocol.Request.UpdateUserInfoRequest();
     data.setPassword(req.body.newPassword);
     r.setToken(req.cookies[Cookies.session]);
@@ -271,10 +260,11 @@ router.post(USER_INFO_API_PATH + '/:suffix', (req, res) => {
     r.setDataList([data])
     request.setUpdateUserInfoRequest(r);
   }else {
-    console.log("ERROR: not supported path " + USER_INFO_API_PATH + req.params.suffix);
+    console.log("ERROR: not supported path " + API.USER_INFO_API_PATH + '/' + req.params.suffix);
     let errorMsg = new ErrorMessage(protocol.ResultCode.REQUEST_RESOURCE_NOT_FOUND, 
-                                    "request resource " + USER_INFO_API_PATH + req.params.suffix +
+                                    "request resource " + API.USER_INFO_API_PATH + req.params.suffix +
                                     " not found").toObject();
+    return;
   }
 
   console.log("send request to Captain Server")
@@ -297,7 +287,7 @@ router.post(USER_INFO_API_PATH + '/:suffix', (req, res) => {
   })
 })
 
-router.delete(USER_ADDRESS_API_PATH, (req, res) => {
+router.delete(API.USER_ADDRESS_API_PATH, (req, res) => {
   console.log("handle delete user address request(" + req.params.suffix + "): " + JSON.stringify(req.cookies));
   // check input
 
@@ -330,7 +320,7 @@ router.delete(USER_ADDRESS_API_PATH, (req, res) => {
 })
 
 
-router.post(USER_ADDRESS_API_PATH, (req, res) => {
+router.post(API.USER_ADDRESS_API_PATH, (req, res) => {
   console.log("handle add user address request(" + req.params.suffix + "): " + JSON.stringify(req.cookies));
   // check input
 
@@ -365,7 +355,7 @@ router.post(USER_ADDRESS_API_PATH, (req, res) => {
 })
 
 
-router.put(USER_ADDRESS_API_PATH, (req, res) => {
+router.put(API.USER_ADDRESS_API_PATH, (req, res) => {
   console.log("handle modify user address request(" + req.params.suffix + "): " + JSON.stringify(req.cookies));
   // check input
 

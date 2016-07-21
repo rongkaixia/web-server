@@ -31,11 +31,11 @@ export default class AccountAddress extends Component {
   static propTypes = {
     address: PropTypes.object,
     addressForm: PropTypes.object,
+    authKey: PropTypes.string.isRequired,
     loadInfo: PropTypes.func.isRequired,
     addAddress: PropTypes.func.isRequired,
     updateAddress: PropTypes.func.isRequired,
-    deleteAddress: PropTypes.func.isRequired,
-    authKey: PropTypes.string.isRequired
+    deleteAddress: PropTypes.func.isRequired
   };
 
   state = {
@@ -101,14 +101,14 @@ export default class AccountAddress extends Component {
   handleDeleteAddress = (event) => {
     // event.preventDefault();
     console.log('handle delete address');
+    const {authKey} = this.props;
     const addressId = this.refs.addressId;
-    const authKey = this.refs.authKey;
-    this.props.deleteAddress({id: addressId.value, authKey: authKey.value})
+    this.props.deleteAddress({id: addressId.value, authKey: authKey})
     .then(() => {
       this.setState({deleteModalIsOpen: false});
     })
     .then(() => {
-      // this.props.loadInfo();
+      this.props.loadInfo();
     })
     .catch(err => {
       // this.setState({deleteAddressError: JSON.stringify(err)})
@@ -173,7 +173,6 @@ export default class AccountAddress extends Component {
           <AddressForm 
           initialValues={initialValues} 
           handleClose={this.closeUpdateModal.bind(this)} 
-          authKey={authKey}
           onSubmit={this.handleUpdateAddress.bind(this)} 
           />
         </Modal>
@@ -195,7 +194,6 @@ export default class AccountAddress extends Component {
             <h4 ref="subtitle">添加收货地址 <button style={{float: 'right'}} onClick={this.closeDeleteModel.bind(this)}>X</button></h4>
           </div>
           <form className="login-form form-horizontal">
-            <input name="utf8" ref="authKey" type="hidden" value={authKey} />
             <div>删除该收货地址吗？</div>
             <button className="btn btn-success" onClick={this.handleDeleteAddress.bind(this)}>确定</button>
           </form>

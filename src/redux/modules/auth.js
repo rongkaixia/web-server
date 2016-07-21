@@ -1,3 +1,5 @@
+import API from 'api/api'
+
 const LOAD = 'redux-example/auth/LOAD';
 const LOAD_SUCCESS = 'redux-example/auth/LOAD_SUCCESS';
 const LOAD_FAIL = 'redux-example/auth/LOAD_FAIL';
@@ -46,7 +48,6 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         loggingIn: false,
-        // user: action.data.userId ? action.data : null,
         loginError: false,
         loginErrorDesc: action.errorDescription
       };
@@ -54,7 +55,6 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         loggingIn: false,
-        // user: null,
         loginError: action.errorCode,
         loginErrorDesc: action.errorDescription
       };
@@ -67,7 +67,6 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         loggingOut: false,
-        // user: null,
         logoutError: false,
         logoutErrorDesc: action.errorDescription
       };
@@ -109,14 +108,14 @@ export function isLoaded(globalState) {
 export function load() {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('/auth')
+    promise: (client) => client.get(API.VALIDATE_TOKEN_API_PATH)
   };
 }
 
 export function login(username, password, authKey) {
   return {
     types: [LOGIN, LOGIN_SUCCESS, LOGIN_FAIL],
-    promise: (client) => client.post('/login', {
+    promise: (client) => client.post(API.LOGIN_API_PATH, {
       data: {
         username: username,
         password: password,
@@ -129,7 +128,7 @@ export function login(username, password, authKey) {
 export function logout(authKey) {
   return {
     types: [LOGOUT, LOGOUT_SUCCESS, LOGOUT_FAIL],
-    promise: (client) => client.post('/logout', {
+    promise: (client) => client.post(API.LOGOUT_API_PATH, {
       data: {
         _csrf: authKey
       }
@@ -140,7 +139,7 @@ export function logout(authKey) {
 export function signup(username, password, authKey) {
   return {
     types: [SIGNUP, SIGNUP_SUCCESS, SIGNUP_FAIL],
-    promise: (client) => client.post('/signup', {
+    promise: (client) => client.post(API.SIGNUP_API_PATH, {
       // authenticity_token
       data: {
         username: username,

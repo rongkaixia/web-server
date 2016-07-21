@@ -183,6 +183,10 @@ message Response{
   }
     
   message SignupResponse{
+    string token = 2;
+    int32 expires_in = 3;
+    string user_id = 4;
+    string username = 5;
   }
 
   message LoginResponse{
