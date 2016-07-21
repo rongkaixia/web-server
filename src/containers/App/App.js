@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
 // import { isLoaded as isInfoLoaded, load as loadInfo } from 'redux/modules/info';
 import { isLoaded as isAuthLoaded, load as loadAuth, logout } from 'redux/modules/auth';
-import { InfoBar, NavBar } from 'components';
+import { InfoBar, NavBar, Footer } from 'components';
 import { routeActions } from 'react-router-redux';
 import config from '../../config';
 import { asyncConnect } from 'redux-async-connect';
@@ -77,6 +77,8 @@ export default class App extends Component {
           target="_blank">on Github</a> or in the <a
           href="https://discord.gg/0ZcbPKXt5bZZb1Ko" target="_blank">#react-redux-universal</a> Discord channel.
         </div>
+
+        <Footer/>
       </div>
     );
   }

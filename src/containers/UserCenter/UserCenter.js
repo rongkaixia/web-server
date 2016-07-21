@@ -46,17 +46,6 @@ export default class UserCenter extends Component {
     this.props.redirectTo('account/info');
   }
 
-
-    // string user_id = 1;
-    // string username = 2;
-    // string email = 4;
-    // string phonenum = 5;
-    // string security_question1 = 6;
-    // string security_question2 = 7;
-    // string security_question3 = 8;
-    // string security_question1_ans = 9;
-    // string security_question2_ans = 10;
-    // string security_question3_ans = 11;
   renderUserInfoPanel(user) {
     const styles = require('./UserCenter.scss');
     const imagePath = require('../../../static/user.png');

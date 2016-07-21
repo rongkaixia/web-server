@@ -14,4 +14,5 @@ export WidgetForm from './WidgetForm/WidgetForm';
 export NavBar from './NavBar/NavBar';
 export AddressCard from './AddressCard/AddressCard';
 export AddressForm from './AddressCard/AddressForm';
+export Footer from './Footer/Footer';
 
