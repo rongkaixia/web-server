@@ -5,7 +5,7 @@ import Modal from 'react-modal';
 import Image from 'react-bootstrap/lib/Image';
 import * as Validation from 'utils/validation';
 import * as userAction from 'redux/modules/userInfo';
-import AddressForm from './AddressForm';
+import {AddressForm} from 'components';
 
 const customStyles = {
   content: {
@@ -208,6 +208,7 @@ export default class AccountAddress extends Component {
     const addressModal = this.renderAddressModal(address);
     const deleteAddressModal = this.renderDeleteAddressModal(address);
     const plusIconPath = require('./plus.png');
+    console.log("plusIconPath: " + plusIconPath);
     const addressId = address ? address.id : null
 
     return (

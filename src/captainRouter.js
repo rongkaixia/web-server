@@ -390,4 +390,10 @@ router.put(API.USER_ADDRESS_API_PATH, (req, res) => {
   })
 })
 
+import {queryProduct} from 'api/product/product';
+
+router.get(API.PRODUCT_API_PATH + '/:product', (req, res) => {
+  let data = queryProduct();
+  res.json({data: data});
+})
 export default router

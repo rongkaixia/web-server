@@ -12,7 +12,6 @@ export MiniInfoBar from './MiniInfoBar/MiniInfoBar';
 export SurveyForm from './SurveyForm/SurveyForm';
 export WidgetForm from './WidgetForm/WidgetForm';
 export NavBar from './NavBar/NavBar';
-export AddressCard from './AddressCard/AddressCard';
-export AddressForm from './AddressCard/AddressForm';
+export AddressForm from './AddressForm/AddressForm';
 export Footer from './Footer/Footer';
 

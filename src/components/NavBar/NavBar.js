@@ -38,58 +38,58 @@ export default class NavBar extends Component {
       returnTo = '?' + Querystring.stringify({return_to: redirectPath});
     }
     return (
-      <Navbar fixedTop>
-          <Navbar.Header>
-            <Navbar.Brand>
-              <IndexLink to="/" activeStyle={{color: '#33e0ff'}}>
-                <div className={styles.brand}/>
-                <span>{config.app.title}</span>
-              </IndexLink>
-            </Navbar.Brand>
-            <Navbar.Toggle/>
-          </Navbar.Header>
+      <Navbar style={{'margin-bottom': '0px'}}>
+        <Navbar.Header>
+          <Navbar.Brand>
+            <IndexLink to="/" activeStyle={{color: '#33e0ff'}}>
+              <div className={styles.brand}/>
+              <span>{config.app.title}</span>
+            </IndexLink>
+          </Navbar.Brand>
+          <Navbar.Toggle/>
+        </Navbar.Header>
 
-          <Navbar.Collapse eventKey={0}>
-            <Nav navbar>
-              {user && <LinkContainer to="/chat">
-                <NavItem eventKey={1}>Chat</NavItem>
-              </LinkContainer>}
+        <Navbar.Collapse eventKey={0}>
+          <Nav>
+            {user && <LinkContainer to="/chat">
+              <NavItem eventKey={1}>Chat</NavItem>
+            </LinkContainer>}
 
-              <LinkContainer to="/widgets">
-                <NavItem eventKey={2}>Widgets</NavItem>
-              </LinkContainer>
-              <LinkContainer to="/survey">
-                <NavItem eventKey={3}>Survey</NavItem>
-              </LinkContainer>
-              {user &&
-              <LinkContainer to="/account">
-                <NavItem eventKey={4}>Account</NavItem>
-              </LinkContainer>}
-
-              {!user &&
-              <LinkContainer to={'/login' + returnTo}>
-                <NavItem eventKey={5}>Login</NavItem>
-              </LinkContainer>}
-              {!user &&
-              <LinkContainer to={"/signup" + returnTo}>
-                <NavItem eventKey={7}>Signup</NavItem>
-              </LinkContainer>}
-              {user &&
-              <LinkContainer to="/logout">
-                <NavItem eventKey={6} className="logout-link" onClick={this.handleLogout}>
-                  Logout
-                </NavItem>
-              </LinkContainer>}
-            </Nav>
+            <LinkContainer to="/widgets">
+              <NavItem eventKey={2}>Widgets</NavItem>
+            </LinkContainer>
+            <LinkContainer to="/necklace">
+              <NavItem eventKey={3}>项链/吊坠</NavItem>
+            </LinkContainer>
             {user &&
-            <p className={styles.loggedInMessage + ' navbar-text'}>Logged in as <strong>{user.username}</strong>.</p>}
-            <Nav navbar pullRight>
-              <NavItem eventKey={1} target="_blank" title="View on Github" href="https://github.com/erikras/react-redux-universal-hot-example">
-                <i className="fa fa-github"/>
+            <LinkContainer to="/account">
+              <NavItem eventKey={4}>Account</NavItem>
+            </LinkContainer>}
+
+            {!user &&
+            <LinkContainer to={'/login' + returnTo}>
+              <NavItem eventKey={5}>Login</NavItem>
+            </LinkContainer>}
+            {!user &&
+            <LinkContainer to={"/signup" + returnTo}>
+              <NavItem eventKey={7}>Signup</NavItem>
+            </LinkContainer>}
+            {user &&
+            <LinkContainer to="/logout">
+              <NavItem eventKey={6} className="logout-link" onClick={this.handleLogout}>
+                Logout
               </NavItem>
-            </Nav>
-          </Navbar.Collapse>
-        </Navbar>
+            </LinkContainer>}
+          </Nav>
+          {user &&
+          <p className={styles.loggedInMessage + ' navbar-text'}>Logged in as <strong>{user.username}</strong>.</p>}
+          <Nav pullRight>
+            <NavItem eventKey={1} target="_blank" title="View on Github" href="https://github.com/erikras/react-redux-universal-hot-example">
+              <i className="fa fa-github"/>
+            </NavItem>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
     );
   }
 }

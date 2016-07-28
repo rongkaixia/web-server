@@ -5,15 +5,17 @@ import {
     App,
     Chat,
     Home,
-    Widgets,
     Login,
     LoginSuccess,
     Logout,
     Signup,
+    Widgets,
     UserCenter,
     AccountInfo,
     AccountAddress,
     AccountCoupon,
+    Necklace,
+    BuyNecklace,
     Survey,
     NotFound,
   } from 'containers';
@@ -55,6 +57,7 @@ export default (store) => {
   /**
    * Please keep routes in alphabetical order
    */
+  // TODO: 把UserCenter改成跟App类似的结构
   return (
     <Route path="/" component={App}>
       { /* Home (main) route */ }
@@ -72,7 +75,8 @@ export default (store) => {
           <Route path="coupon" component={AccountCoupon}/>
         </Route>
       </Route>
-
+      <Route path="necklace" component={Necklace}/>
+      <Route path="shop/buy-necklace/:id" component={BuyNecklace}/>
       { /* Routes */ }
       <Route onEnter={requireNotLogin}>
         <Route path="login" component={Login}/>

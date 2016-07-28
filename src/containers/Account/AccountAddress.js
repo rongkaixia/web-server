@@ -3,10 +3,9 @@ import { connect } from 'react-redux';
 import { asyncConnect } from 'redux-async-connect';
 import Helmet from 'react-helmet';
 import Modal from 'react-modal';
-import {UserCenterLeftPanel} from 'containers';
-import {AddressCard} from 'components';
 import { routeActions } from 'react-router-redux';
 import * as userAction from 'redux/modules/userInfo';
+import {UserCenterLeftPanel, AddressCard} from 'containers';
 
 const customStyles = {
   content: {
