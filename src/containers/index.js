@@ -15,5 +15,6 @@ export AccountAddress from './Account/AccountAddress';
 export AccountCoupon from './Account/AccountCoupon';
 export Necklace from './Product/Necklace/Necklace';
 export BuyNecklace from './Shop/BuyNecklace/BuyNecklace';
+export Cart from './Cart/Cart';
 export Checkout from './Order/Buy/Checkout';
 export NotFound from './NotFound/NotFound';

@@ -72,7 +72,7 @@ export default class UserCenter extends Component {
             <Button bsSize="large">+</Button>
           </ButtonGroup>
           <p className={styles.chooseOptionComment}></p>
-          <Button bsSize="large" bsStyle="info" href="/buy/checkout/123c">立即购买</Button>
+          <Button bsSize="large" bsStyle="info" href="/cart">立即购买</Button>
         </div>
       </div>
     );

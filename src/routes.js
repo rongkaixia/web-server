@@ -16,6 +16,7 @@ import {
     AccountCoupon,
     Necklace,
     BuyNecklace,
+    Cart,
     Checkout,
     Survey,
     NotFound,
@@ -78,6 +79,7 @@ export default (store) => {
       </Route>
       <Route path="necklace" component={Necklace}/>
       <Route path="shop/buy-necklace/:id" component={BuyNecklace}/>
+      <Route path="cart" component={Cart}/>
       <Route path="buy/checkout/:id" component={Checkout}/>
       { /* Routes */ }
       <Route onEnter={requireNotLogin}>

@@ -80,7 +80,7 @@ export default class UserCenter extends Component {
         </div>
         <div className={styles.section + " " + styles.sectionOptions + " clearfix"}>
           <div className={styles.sectionHeader}>
-            <h3 className={styles.title}>{"支付方式"}</h3>
+            <h3 className={styles.title}>{"配送方式"}</h3>
           </div>
           <div className={styles.sectionBody + " clearfix"}>
             <Button bsSize="large">快递配送（免运费）</Button>
@@ -127,7 +127,7 @@ export default class UserCenter extends Component {
               </div>
               <div className={styles.submit}>
                 <div className={styles.submitButton}>
-                  <Button bsSize="large" bsStyle={"warning"}>提交订单</Button>
+                  <Button bsSize="large" bsStyle={"warning"} href="#">提交订单</Button>
                 </div>
               </div>
             </div>
