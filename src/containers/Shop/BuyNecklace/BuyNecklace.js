@@ -6,6 +6,7 @@ import { asyncConnect } from 'redux-async-connect';
 import {UserCenterLeftPanel} from 'containers';
 import Image from 'react-bootstrap/lib/Image';
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
+import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import Button from 'react-bootstrap/lib/Button';
 import { routeActions } from 'react-router-redux';
 import * as productAction from 'redux/modules/product';
@@ -65,11 +66,13 @@ export default class UserCenter extends Component {
           </ButtonToolbar>
           <p className={styles.chooseOptionComment}></p>
           <p className={styles.subTitle}>{"3.选择数量"}</p>
-          <ButtonToolbar>
-            <Button bsSize="large">18K白金</Button>
-            <Button bsSize="large">18K黄金</Button>
-          </ButtonToolbar>
+          <ButtonGroup>
+            <Button bsSize="large">-</Button>
+            <Button bsSize="large">0</Button>
+            <Button bsSize="large">+</Button>
+          </ButtonGroup>
           <p className={styles.chooseOptionComment}></p>
+          <Button bsSize="large" bsStyle="info" href="/buy/checkout/123c">立即购买</Button>
         </div>
       </div>
     );
