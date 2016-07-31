@@ -5,7 +5,7 @@ import Helmet from 'react-helmet';
 import Modal from 'react-modal';
 import { routeActions } from 'react-router-redux';
 import * as userAction from 'redux/modules/userInfo';
-import {UserCenterLeftPanel, AddressCard} from 'containers';
+import {AddressCard} from 'containers';
 
 const customStyles = {
   content: {
@@ -47,7 +47,6 @@ export default class AccountAddress extends Component {
 
   render() {
     const styles = require('./AccountAddress.scss');
-    const {leftPanel, rightPanel} = require('../UserCenter/UserCenter.scss');
     const {user, loadInfo, addAddress, updateAddress, deleteAddress} = this.props;
     // const address = {id: '1111', username: '小明', phonenum: '15002029322', address: "深圳市南山区鸿瑞花园4-702"}
     let addressCards = [];
@@ -62,19 +61,10 @@ export default class AccountAddress extends Component {
       <AddressCard />
     );
     return (
-      <div className={'container'}>
-        <h1>User Center</h1>
-        <div className={leftPanel}>
-          <UserCenterLeftPanel/>
+      <div className={styles.AddressPanel}>
+        <div className="form-group form-inline">
+          <ul>{addressCards}</ul>
         </div>
-        <div className={rightPanel}>
-          <div className={styles.AddressPanel}>
-            <div className="form-group form-inline">
-              <ul>{addressCards}</ul>
-            </div>
-          </div>
-        </div>
-
       </div>
     );
   }

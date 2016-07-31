@@ -2,11 +2,15 @@ import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
 import { asyncConnect } from 'redux-async-connect';
-import {UserCenterLeftPanel} from 'containers';
 import Image from 'react-bootstrap/lib/Image';
 import { routeActions } from 'react-router-redux';
 import * as userAction from 'redux/modules/userInfo';
-
+import {Link} from 'react-router';
+import Navbar from 'react-bootstrap/lib/Navbar';
+import Nav from 'react-bootstrap/lib/Nav';
+import NavItem from 'react-bootstrap/lib/NavItem';
+import MenuItem from 'react-bootstrap/lib/MenuItem';
+import NavDropdown from 'react-bootstrap/lib/NavDropdown';
 
 // TODO: 增加错误展示界面，监听loadInfo的错误
 /* eslint-disable */ 
@@ -20,10 +24,44 @@ import * as userAction from 'redux/modules/userInfo';
         {redirectTo: routeActions.push})
 export default class UserCenter extends Component {
   static propTypes = {
+    children: PropTypes.object.isRequired,
     user: PropTypes.object,
     redirectTo: PropTypes.func.isRequired
   };
 
+  renderLeftPannel() {
+    return (
+        <div className="row">
+          <div className="span3">
+            <div className="well">
+              <ul className="nav nav-list">
+                <li><label className="tree-toggle nav-header">订单中心</label>
+                  <ul className="nav nav-list tree">
+                    <li><Link to="#">我的订单</Link></li>
+                    <li><Link to="/cart">我的购物车</Link></li>
+                  </ul>
+                </li>
+                <li><label className="tree-toggle nav-header">个人中心</label>
+                  <ul className="nav nav-list tree">
+                    <li><Link to="/account">我的商城</Link></li>
+                    <li><Link to="/account/info">个人信息</Link></li>
+                    <li><Link to="#">修改密码</Link></li>
+                    <li><Link to="/account/address">收货地址</Link></li>
+                    <li><Link to="/account/coupon">优惠券</Link></li>
+                  </ul>
+                </li>
+                <li><label className="tree-toggle nav-header">售后中心</label>
+                  <ul className="nav nav-list tree">
+                    <li><Link to="#">联系我们</Link></li>
+                    <li><Link to="#">意见反馈</Link></li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+    );
+  }
   // componentWillReceiveProps(nextProps) {
   //   const {signingUp, signupError, signupErrorDesc} = nextProps;
   //   if (!signingUp && !signupError) {
@@ -41,123 +79,23 @@ export default class UserCenter extends Component {
   //   // username.value = '';
   //   password.value = '';
   // }
-  redirectToAccountInfo = (event) => {
-    event.preventDefault();
-    this.props.redirectTo('account/info');
-  }
-
-  renderUserInfoPanel(user) {
-    const styles = require('./UserCenter.scss');
-    const imagePath = require('../../../static/user.png');
-    return (
-      <div className={"well " + styles.boxBackground}>
-        <div className="row">
-          <div className="col-md-2">
-            <Image href="#" alt="200x200 pull-xs-left" src={imagePath} responsive rounded/>
-          </div>
-          <div className="col-md-2">
-            <ul className="nav nav-list">
-              <li>{"您好，" + user.username}</li>
-              <li>欢迎回来</li>
-            </ul>
-          </div>
-          <div className="col-md-8">
-            <ul className="nav nav-list">
-              <li>{"账号：" + user.username} </li>
-              {user.email &&
-              <li>
-                {"绑定邮箱：" + user.email}
-              </li>
-              }
-              {!user.email &&
-              <li>
-                绑定邮箱：未绑定
-                <button className="btn btn-warning btn-sm" onClick={this.redirectToAccountInfo}>立即绑定</button>
-              </li>
-              }
-              {user.phonenum &&
-              <li>
-                {"绑定手机号：" + user.phonenum}
-              </li>
-              }
-              {!user.phonenum &&
-              <li>
-                绑定手机号：未绑定
-                <button className="btn btn-warning btn-sm" onClick={this.redirectToAccountInfo}>立即绑定</button>
-              </li>
-              }
-            </ul>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  renderUserOrderPanel(user) {
-    const styles = require('./UserCenter.scss');
-    const unpayOrderIconPath = require('../../../static/unpayOrder.png');
-    const payedOrderIconPath = require('../../../static/payedOrder.png');
-    const completeOrderIconPath = require('../../../static/completeOrder.png');
-    const favCartIconPath = require('../../../static/favCart.png');
-    return (
-      <div className={"well " + styles.boxBackground}>
-        <div className="row">
-          <div className="col-md-2">
-            <Image href="#" alt="200x200 pull-xs-left" src={unpayOrderIconPath} responsive rounded/>
-          </div>
-          <div className="col-md-2">
-            <div> 待支付订单 </div>
-            <div><a href="">查看待支付订单</a></div>
-          </div>
-          <div className="col-md-2">
-            <Image href="#" alt="200x200 pull-xs-left" src={payedOrderIconPath} responsive rounded/>
-          </div>
-          <div className="col-md-2">
-            <div> 待发货订单 </div>
-            <div><a href="">查看待发货订单</a></div>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-2">
-            <Image href="#" alt="200x200 pull-xs-left" src={completeOrderIconPath} responsive rounded/>
-          </div>
-          <div className="col-md-2">
-            <div> 已完成订单 </div>
-            <div><a href="">查看已完成订单</a></div>
-          </div>
-          <div className="col-md-2">
-            <Image href="#" alt="200x200 pull-xs-left" src={favCartIconPath} responsive rounded/>
-          </div>
-          <div className="col-md-2">
-            <div> 购物车 </div>
-            <div><a href="">查看购物车</a></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   render() {
     const styles = require('./UserCenter.scss');
     const {user} = this.props;
+    const leftPanel = this.renderLeftPannel();
     // const userInfoPanel = this.renderUserInfoPanel(user);
     // const userOrderPanel = this.renderUserOrderPanel(user);
     return (
       <div className={styles.userCenterPage + ' container'}>
         <h1>User Center</h1>
         <div className={styles.leftPanel}>
-          <UserCenterLeftPanel/>
+          {leftPanel}
         </div>
         {user && 
         <div className={styles.rightPanel}>
-          <div className={styles.userInfoPanel}>
-            {this.renderUserInfoPanel(user)}
-          </div>
-          <div className={styles.userOrderPanel}>
-            {this.renderUserOrderPanel(user)}
-          </div>
+          {this.props.children}
         </div>}
-
       </div>
     );
   }

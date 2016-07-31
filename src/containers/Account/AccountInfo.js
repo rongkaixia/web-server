@@ -3,7 +3,6 @@ import Modal from 'react-modal';
 import { connect } from 'react-redux';
 import { asyncConnect } from 'redux-async-connect';
 import Helmet from 'react-helmet';
-import {UserCenterLeftPanel} from 'containers';
 import Image from 'react-bootstrap/lib/Image';
 import { routeActions } from 'react-router-redux';
 import * as userAction from 'redux/modules/userInfo';
@@ -476,19 +475,10 @@ export default class AccountInfo extends Component {
   }
   render() {
     const styles = require('./AccountInfo.scss');
-    const {leftPanel, rightPanel} = require('../UserCenter/UserCenter.scss');
     const {user} = this.props;
     return (
       <div className={'container'}>
-        <h1>User Center</h1>
-        <div className={leftPanel}>
-          <UserCenterLeftPanel/>
-        </div>
-        {user && 
-        <div className={rightPanel}>
-          {this.renderUserInfo(user)}
-        </div>}
-
+        {this.renderUserInfo(user)}
       </div>
     );
   }

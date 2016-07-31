@@ -127,7 +127,7 @@ export default class UserCenter extends Component {
               </div>
               <div className={styles.submit}>
                 <div className={styles.submitButton}>
-                  <Button bsSize="large" bsStyle={"warning"} href="#">提交订单</Button>
+                  <Button bsSize="large" bsStyle={"warning"} href="/buy/payment">提交订单</Button>
                 </div>
               </div>
             </div>

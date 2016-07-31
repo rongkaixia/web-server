@@ -31,34 +31,3 @@
         width: auto;
     }
 }
-
-.userInfoPanel, .userOrderPanel {
-  float: left;
-  width: 100%;
-  padding-left: 30px;
-}
-
-.userInfoPanel {
-  height: 20%;
-}
-
-.userOrderPanel {
-  height: 80%;
-}
-
-.userInfoWelcome .userInfoDesc {
-  float: left;
-  height: 100%;
-}
-
-.userInfoWelcome {
-  width: 30%;
-}
-
-.userInfoDesc {
-  width: 70%;
-}
-
-.boxBackground {
-  background-color: rgba(245, 240, 240, 0);
-}

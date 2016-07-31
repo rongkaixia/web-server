@@ -11,6 +11,7 @@ import {
     Signup,
     Widgets,
     UserCenter,
+    UserCenterHome,
     AccountInfo,
     AccountAddress,
     AccountCoupon,
@@ -18,6 +19,7 @@ import {
     BuyNecklace,
     Cart,
     Checkout,
+    Payment,
     Survey,
     NotFound,
   } from 'containers';
@@ -70,8 +72,8 @@ export default (store) => {
         <Route path="chat" component={Chat}/>
         <Route path="loginSuccess" component={LoginSuccess}/>
         <Route path="logout" component={Logout}/>
-        <Route path="account">
-          <IndexRoute component={UserCenter}/>
+        <Route path="account" component={UserCenter}>
+          <IndexRoute component={UserCenterHome}/>
           <Route path="info" component={AccountInfo}/>
           <Route path="address" component={AccountAddress}/>
           <Route path="coupon" component={AccountCoupon}/>
@@ -81,6 +83,7 @@ export default (store) => {
       <Route path="shop/buy-necklace/:id" component={BuyNecklace}/>
       <Route path="cart" component={Cart}/>
       <Route path="buy/checkout/:id" component={Checkout}/>
+      <Route path="buy/payment" component={Payment}/>
       { /* Routes */ }
       <Route onEnter={requireNotLogin}>
         <Route path="login" component={Login}/>
