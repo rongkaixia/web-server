@@ -37,7 +37,7 @@ export default class UserCenter extends Component {
               <ul className="nav nav-list">
                 <li><label className="tree-toggle nav-header">订单中心</label>
                   <ul className="nav nav-list tree">
-                    <li><Link to="#">我的订单</Link></li>
+                    <li><Link to="/account/order">我的订单</Link></li>
                     <li><Link to="/cart">我的购物车</Link></li>
                   </ul>
                 </li>

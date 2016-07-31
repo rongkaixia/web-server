@@ -30,7 +30,7 @@ const customStyles = {
                       loadInfoErrorDesc: state.userInfo.loadInfoErrorDesc})),
         {loadInfo: userAction.loadInfo,
         redirectTo: routeActions.push})
-export default class AccountAddress extends Component {
+export default class Address extends Component {
   static propTypes = {
     user: PropTypes.object,
     redirectTo: PropTypes.func.isRequired
@@ -46,7 +46,7 @@ export default class AccountAddress extends Component {
   // }
 
   render() {
-    const styles = require('./AccountAddress.scss');
+    const styles = require('./Address.scss');
     const {user, loadInfo, addAddress, updateAddress, deleteAddress} = this.props;
     // const address = {id: '1111', username: '小明', phonenum: '15002029322', address: "深圳市南山区鸿瑞花园4-702"}
     let addressCards = [];

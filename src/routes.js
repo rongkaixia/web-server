@@ -15,6 +15,7 @@ import {
     AccountInfo,
     AccountAddress,
     AccountCoupon,
+    AccountOrder,
     Necklace,
     BuyNecklace,
     Cart,
@@ -74,6 +75,7 @@ export default (store) => {
         <Route path="logout" component={Logout}/>
         <Route path="account" component={UserCenter}>
           <IndexRoute component={UserCenterHome}/>
+          <Route path="order" component={AccountOrder}/>
           <Route path="info" component={AccountInfo}/>
           <Route path="address" component={AccountAddress}/>
           <Route path="coupon" component={AccountCoupon}/>

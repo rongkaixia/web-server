@@ -16,7 +16,7 @@ import * as userAction from 'redux/modules/userInfo';
 }])
 @connect((state => ({user: state.userInfo.user})),
         {redirectTo: routeActions.push})
-export default class AccountCoupon extends Component {
+export default class Coupon extends Component {
   static propTypes = {
     user: PropTypes.object,
     redirectTo: PropTypes.func.isRequired
@@ -31,7 +31,7 @@ export default class AccountCoupon extends Component {
   //   }
   // }
   render() {
-    const styles = require('./AccountCoupon.scss');
+    const styles = require('./Coupon.scss');
     const {user} = this.props;
     return (
       <div className={styles.CouponPanel}>

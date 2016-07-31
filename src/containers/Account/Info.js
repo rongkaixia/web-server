@@ -36,7 +36,7 @@ const customStyles = {
                       updateInfoError: state.userInfo.updateInfoError,
                       updateInfoErrorDesc: state.userInfo.updateInfoErrorDesc})),
         {...userAction, redirectTo: routeActions.push})
-export default class AccountInfo extends Component {
+export default class Info extends Component {
   static propTypes = {
     user: PropTypes.object,
     authKey: PropTypes.string,
@@ -370,7 +370,7 @@ export default class AccountInfo extends Component {
   }
 
   renderUserInfo(user) {
-    const styles = require('./AccountInfo.scss');
+    const styles = require('./Info.scss');
     const userModal = this.renderUserModal(user);
     const passwordModal = this.renderPasswordModal(user);
     const emailModal = this.renderEmailModal(user);
@@ -474,7 +474,7 @@ export default class AccountInfo extends Component {
     }
   }
   render() {
-    const styles = require('./AccountInfo.scss');
+    const styles = require('./Info.scss');
     const {user} = this.props;
     return (
       <div className={'container'}>
