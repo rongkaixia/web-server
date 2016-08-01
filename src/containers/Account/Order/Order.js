@@ -101,7 +101,7 @@ export default class UserCenter extends Component {
                 </div>
 
                 <div className={styles.operation}>
-                  <Button bsSize="normal" href="#">订单详情</Button>
+                  <Button bsSize="normal" href="/account/order/detail/123c">订单详情</Button>
                 </div>              
               </div>
             </div>

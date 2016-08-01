@@ -1,6 +1,6 @@
 {
   "javascript": {
-    "main": "http://localhost:3001/dist/main-c7a7a62028e1b628668a.js"
+    "main": "http://localhost:3001/dist/main-f5eb4a9ca677bd852209.js"
   },
   "styles": {},
   "assets": {
@@ -125,6 +125,25 @@
       "CouponPanel": "CouponPanel___3E2em",
       "_style": ".CouponPanel___3E2em {\n  float: left;\n  width: 100%;\n  padding-left: 30px;\n}\n"
     },
+    "./src/containers/Account/Order/Order.scss": {
+      "buyNecklacePage": "buyNecklacePage___y5eom",
+      "headline": "headline___2Z1Ug",
+      "ordersBox": "ordersBox___3Hf3Q",
+      "section": "section___1LkJT",
+      "sectionHeader": "sectionHeader___3Y25H",
+      "item": "item___u85Yj",
+      "sectionBody": "sectionBody___2hCgk",
+      "order": "order___1tMEH",
+      "header": "header___Q1jDu",
+      "status": "status___2CHNY",
+      "time": "time___2eMN5",
+      "total": "total___37yq_",
+      "items": "items___1D-I7",
+      "operation": "operation___PDQHC",
+      "itemThump": "itemThump___2sJ9Y",
+      "itemDesc": "itemDesc___3w07f",
+      "_style": ".buyNecklacePage___y5eom input {\n  padding: 5px 10px;\n  border-radius: 5px;\n  border: 1px solid #ccc;\n}\n\n.buyNecklacePage___y5eom form {\n  margin: 30px 0;\n}\n\n.buyNecklacePage___y5eom form .btn {\n  margin-left: 10px;\n}\n\n.headline___2Z1Ug {\n  text-align: center;\n  margin-top: 46px;\n  margin-bottom: 48px;\n  padding-left: 28px;\n  padding-right: 28px;\n}\n\n.ordersBox___3Hf3Q {\n  padding: 48px 0 48px;\n  background-color: #fff;\n}\n\n.section___1LkJT {\n  margin-left: 48px;\n  margin-right: 48px;\n  margin-top: 24px;\n  width: 75%;\n}\n\n.section___1LkJT .sectionHeader___3Y25H {\n  width: 100%;\n  line-height: 40px;\n  border-bottom: 1px solid #E1E1E1;\n  padding-bottom: 10px;\n}\n\n.section___1LkJT .sectionHeader___3Y25H .item___u85Yj {\n  float: left;\n  width: 20%;\n  padding: 0 24px;\n  font-size: 18px;\n  font-weight: normal;\n  border-right: 1px solid #E1E1E1;\n}\n\n.section___1LkJT .sectionBody___2hCgk {\n  float: left;\n  margin-top: 20px;\n  width: 100%;\n}\n\n.order___1tMEH {\n  padding: 0 0 0 0px;\n  font-size: 14px;\n  width: 100%;\n}\n\n.order___1tMEH .header___Q1jDu {\n  background-color: #fff;\n  width: 100%;\n  line-height: 40px;\n  border: 1px solid #E1E1E1;\n}\n\n.order___1tMEH .header___Q1jDu .status___2CHNY {\n  padding: 20px 30px 1px;\n  width: 70%;\n  float: left;\n}\n\n.order___1tMEH .header___Q1jDu .time___2eMN5 {\n  padding: 0px 30px 1px;\n  margin: 0px;\n  width: 70%;\n  float: left;\n}\n\n.order___1tMEH .header___Q1jDu .total___37yq_ {\n  padding-right: 30px;\n  text-align: right;\n  float: right;\n  vertical-align: top;\n}\n\n.order___1tMEH .items___1D-I7 {\n  padding: 0 24px;\n  width: 100%;\n  border-bottom: 1px solid #E1E1E1;\n  border-left: 1px solid #E1E1E1;\n  border-right: 1px solid #E1E1E1;\n}\n\n.order___1tMEH .items___1D-I7 .operation___PDQHC {\n  padding-top: 20px;\n  padding-right: 30px;\n  text-align: right;\n  vertical-align: top;\n}\n\n.order___1tMEH .item___u85Yj {\n  width: 75%;\n  float: left;\n}\n\n.order___1tMEH .item___u85Yj .itemThump___2sJ9Y {\n  margin-top: 20px;\n  width: 78px;\n  height: 78px;\n  border-radius: 4px;\n  float: left;\n}\n\n.order___1tMEH .item___u85Yj .itemDesc___3w07f {\n  width: 315px;\n  margin-left: 21px;\n  line-height: 110px;\n  float: left;\n  font-size: 20px;\n}\n"
+    },
     "./src/containers/Product/Necklace/Necklace.scss": {
       "necklacePage": "necklacePage___1ofY6",
       "headline": "headline___1xs9D",
@@ -198,24 +217,27 @@
       "tab-content": "tab-content___3dp54",
       "_style": ".buyNecklacePage___3vIGd input {\n  padding: 5px 10px;\n  border-radius: 5px;\n  border: 1px solid #ccc;\n}\n\n.buyNecklacePage___3vIGd form {\n  margin: 30px 0;\n}\n\n.buyNecklacePage___3vIGd form .btn {\n  margin-left: 10px;\n}\n\n.headline___1wMUB {\n  text-align: center;\n  margin-top: 46px;\n  margin-bottom: 48px;\n  padding-left: 28px;\n  padding-right: 28px;\n}\n\n.paymentBox___2xDj- {\n  padding: 48px 0 48px;\n  background-color: #fff;\n}\n\n.payInfo___6j99a {\n  margin-left: 48px;\n  margin-right: 48px;\n  border: 1px solid #e0e0e0;\n  height: 160px;\n}\n\n.payInfo___6j99a .success___3ny5y {\n  float: left;\n  line-height: 160px;\n  padding-left: 20px;\n  width: 15%;\n}\n\n.payInfo___6j99a h3 {\n  padding-bottom: 20px;\n  line-height: 36px;\n  font-size: 36px;\n  color: #212121;\n}\n\n.payInfo___6j99a .comment___10NP3 {\n  line-height: 28px;\n  font-size: 16px;\n}\n\n.payMethod___3dOTC {\n  margin-left: 48px;\n  margin-right: 48px;\n  margin-top: 48px;\n  height: 160px;\n}\n\n.payMethod___3dOTC .tab-content___3dp54 {\n  border: 1px solid #e0e0e0;\n  height: 160px;\n}\n"
     },
-    "./src/containers/Account/Order/Order.scss": {
-      "buyNecklacePage": "buyNecklacePage___y5eom",
-      "headline": "headline___2Z1Ug",
-      "ordersBox": "ordersBox___3Hf3Q",
-      "section": "section___1LkJT",
-      "sectionHeader": "sectionHeader___3Y25H",
-      "item": "item___u85Yj",
-      "sectionBody": "sectionBody___2hCgk",
-      "order": "order___1tMEH",
-      "header": "header___Q1jDu",
-      "status": "status___2CHNY",
-      "time": "time___2eMN5",
-      "total": "total___37yq_",
-      "items": "items___1D-I7",
-      "operation": "operation___PDQHC",
-      "itemThump": "itemThump___2sJ9Y",
-      "itemDesc": "itemDesc___3w07f",
-      "_style": ".buyNecklacePage___y5eom input {\n  padding: 5px 10px;\n  border-radius: 5px;\n  border: 1px solid #ccc;\n}\n\n.buyNecklacePage___y5eom form {\n  margin: 30px 0;\n}\n\n.buyNecklacePage___y5eom form .btn {\n  margin-left: 10px;\n}\n\n.headline___2Z1Ug {\n  text-align: center;\n  margin-top: 46px;\n  margin-bottom: 48px;\n  padding-left: 28px;\n  padding-right: 28px;\n}\n\n.ordersBox___3Hf3Q {\n  padding: 48px 0 48px;\n  background-color: #fff;\n}\n\n.section___1LkJT {\n  margin-left: 48px;\n  margin-right: 48px;\n  margin-top: 24px;\n  width: 75%;\n}\n\n.section___1LkJT .sectionHeader___3Y25H {\n  width: 100%;\n  line-height: 40px;\n  border-bottom: 1px solid #E1E1E1;\n  padding-bottom: 10px;\n}\n\n.section___1LkJT .sectionHeader___3Y25H .item___u85Yj {\n  float: left;\n  width: 20%;\n  padding: 0 24px;\n  font-size: 18px;\n  font-weight: normal;\n  border-right: 1px solid #E1E1E1;\n}\n\n.section___1LkJT .sectionBody___2hCgk {\n  float: left;\n  margin-top: 20px;\n  width: 100%;\n}\n\n.order___1tMEH {\n  padding: 0 0 0 0px;\n  font-size: 14px;\n  width: 100%;\n}\n\n.order___1tMEH .header___Q1jDu {\n  background-color: #fff;\n  width: 100%;\n  line-height: 40px;\n  border: 1px solid #E1E1E1;\n}\n\n.order___1tMEH .header___Q1jDu .status___2CHNY {\n  padding: 20px 30px 1px;\n  width: 70%;\n  float: left;\n}\n\n.order___1tMEH .header___Q1jDu .time___2eMN5 {\n  padding: 0px 30px 1px;\n  margin: 0px;\n  width: 70%;\n  float: left;\n}\n\n.order___1tMEH .header___Q1jDu .total___37yq_ {\n  padding-right: 30px;\n  text-align: right;\n  float: right;\n  vertical-align: top;\n}\n\n.order___1tMEH .items___1D-I7 {\n  padding: 0 24px;\n  width: 100%;\n  border-bottom: 1px solid #E1E1E1;\n  border-left: 1px solid #E1E1E1;\n  border-right: 1px solid #E1E1E1;\n}\n\n.order___1tMEH .items___1D-I7 .operation___PDQHC {\n  padding-top: 20px;\n  padding-right: 30px;\n  text-align: right;\n  vertical-align: top;\n}\n\n.order___1tMEH .item___u85Yj {\n  width: 75%;\n  float: left;\n}\n\n.order___1tMEH .item___u85Yj .itemThump___2sJ9Y {\n  margin-top: 20px;\n  width: 78px;\n  height: 78px;\n  border-radius: 4px;\n  float: left;\n}\n\n.order___1tMEH .item___u85Yj .itemDesc___3w07f {\n  width: 315px;\n  margin-left: 21px;\n  line-height: 110px;\n  float: left;\n  font-size: 20px;\n}\n"
+    "./src/containers/Account/Order/Detail.scss": {
+      "buyNecklacePage": "buyNecklacePage___y6i65",
+      "headline": "headline___2WagW",
+      "orderDetailBox": "orderDetailBox___12bEf",
+      "section": "section___3Mm_W",
+      "sectionHeader": "sectionHeader___2ZyKU",
+      "operation": "operation___3rqC2",
+      "title": "title___3ISh5",
+      "modify": "modify___Ykq4W",
+      "sectionBody": "sectionBody___16Xkh",
+      "shoppingList": "shoppingList___NJ3X_",
+      "name": "name___2DjNB",
+      "subtotal": "subtotal___3vMed",
+      "num": "num___IIZ3q",
+      "price": "price___2rZPb",
+      "items": "items___2mPR3",
+      "itemThump": "itemThump___35ED0",
+      "itemDesc": "itemDesc___2Dqtu",
+      "summary": "summary___1WWQY",
+      "total": "total___36uUv",
+      "_style": ".buyNecklacePage___y6i65 input {\n  padding: 5px 10px;\n  border-radius: 5px;\n  border: 1px solid #ccc;\n}\n\n.buyNecklacePage___y6i65 form {\n  margin: 30px 0;\n}\n\n.buyNecklacePage___y6i65 form .btn {\n  margin-left: 10px;\n}\n\n.headline___2WagW {\n  text-align: center;\n  margin-top: 46px;\n  margin-bottom: 48px;\n  padding-left: 28px;\n  padding-right: 28px;\n}\n\n.orderDetailBox___12bEf {\n  background-color: #fff;\n}\n\n.section___3Mm_W {\n  margin-left: 48px;\n  margin-right: 48px;\n}\n\n.sectionHeader___2ZyKU {\n  float: left;\n  width: 90%;\n  border-bottom: 1px solid #e0e0e0;\n  margin-bottom: 10px;\n}\n\n.section___3Mm_W .sectionHeader___2ZyKU .operation___3rqC2 {\n  padding-top: 10px;\n  padding-right: 30px;\n  vertical-align: top;\n  float: right;\n}\n\n.section___3Mm_W .sectionHeader___2ZyKU .title___3ISh5 {\n  float: left;\n  color: #333;\n  font-size: 18px;\n  line-height: 20px;\n  font-weight: normal;\n}\n\n.section___3Mm_W .sectionHeader___2ZyKU .modify___Ykq4W {\n  float: left;\n  color: #32a0e8;\n  font-size: 14px;\n  line-height: 20px;\n  font-weight: normal;\n  padding-left: 8px;\n}\n\n.sectionBody___16Xkh {\n  float: left;\n  width: 90%;\n}\n\n.section___3Mm_W .sectionBody___16Xkh table {\n  color: #757575;\n}\n\n.section___3Mm_W .sectionBody___16Xkh th {\n  padding: 3px;\n}\n\n.shoppingList___NJ3X_ {\n  padding: 0 0 0 0px;\n  font-size: 14px;\n}\n\n.shoppingList___NJ3X_ .title___3ISh5 {\n  height: 38px;\n  padding: 0 24px;\n  border-bottom: 1px solid #E1E1E1;\n  line-height: 38px;\n  color: #666;\n}\n\n.shoppingList___NJ3X_ .title___3ISh5 span {\n  float: right;\n  text-align: center;\n}\n\n.shoppingList___NJ3X_ .title___3ISh5 .name___2DjNB {\n  float: left;\n  text-align: left;\n}\n\n.shoppingList___NJ3X_ .title___3ISh5 .subtotal___3vMed {\n  width: 152px;\n  padding-right: 30px;\n  text-align: right;\n}\n\n.shoppingList___NJ3X_ .title___3ISh5 .num___IIZ3q {\n  width: 152px;\n  padding-right: 30px;\n  text-align: right;\n}\n\n.shoppingList___NJ3X_ .title___3ISh5 .price___2rZPb {\n  width: 152px;\n  padding-right: 30px;\n  text-align: right;\n}\n\n.shoppingList___NJ3X_ .items___2mPR3 {\n  padding: 0 24px;\n  border-bottom: 1px solid #E1E1E1;\n  height: 120px;\n}\n\n.shoppingList___NJ3X_ .items___2mPR3 .itemThump___35ED0 {\n  margin-top: 20px;\n  width: 78px;\n  height: 78px;\n  border-radius: 4px;\n  float: left;\n}\n\n.shoppingList___NJ3X_ .items___2mPR3 .itemDesc___2Dqtu {\n  width: 315px;\n  margin-left: 21px;\n  line-height: 110px;\n  float: left;\n}\n\n.shoppingList___NJ3X_ .items___2mPR3 span {\n  float: right;\n  text-align: center;\n}\n\n.shoppingList___NJ3X_ .items___2mPR3 .subtotal___3vMed {\n  width: 152px;\n  padding-right: 30px;\n  line-height: 110px;\n  text-align: right;\n}\n\n.shoppingList___NJ3X_ .items___2mPR3 .num___IIZ3q {\n  width: 152px;\n  padding-right: 30px;\n  line-height: 110px;\n  text-align: right;\n}\n\n.shoppingList___NJ3X_ .items___2mPR3 .price___2rZPb {\n  width: 152px;\n  padding-right: 30px;\n  line-height: 110px;\n  text-align: right;\n}\n\n.shoppingList___NJ3X_ .summary___1WWQY {\n  padding: 0 24px;\n  border-bottom: 1px solid #E1E1E1;\n  height: 120px;\n}\n\n.shoppingList___NJ3X_ .summary___1WWQY .total___36uUv {\n  width: 152px;\n  padding-right: 30px;\n  line-height: 110px;\n  text-align: right;\n  float: right;\n}\n"
     }
   }
 }
