@@ -19,7 +19,8 @@ import {Provider} from 'react-redux';
 import BodyParser from 'body-parser';
 import CookieParser from 'cookie-parser';
 import getRoutes from './routes';
-import captainRouter from './captainRouter';
+import CaptainMiddleware from './middleware/CaptainMiddleware';
+import ProductMiddleware from './middleware/ProductMiddleware';
 import {generateCsrfToken} from 'utils/AuthenticityToken';
 import csurf from 'csurf';
 import {load as loadCsrfToken} from './redux/modules/csrf';
@@ -73,7 +74,8 @@ proxy.on('error', (error, req, res) => {
 });
 
 // captain router, redirect request to captain server
-app.use(captainRouter);
+app.use(CaptainMiddleware);
+app.use(ProductMiddleware);
 
 app.use((req, res) => {
   console.log("*************In normal app use((req,res)=>{...})***************")

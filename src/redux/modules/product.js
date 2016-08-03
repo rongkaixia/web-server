@@ -1,32 +1,33 @@
 import API from 'api/api'
 
-const LOAD_INFO = 'redux-example/product/LOAD_INFO';
-const LOAD_INFO_SUCCESS = 'redux-example/product/LOAD_INFO_SUCCESS';
-const LOAD_INFO_FAIL = 'redux-example/product/LOAD_INF_FAIL';
+const LOAD_PRODUCT = 'redux-example/product/LOAD_PRODUCT';
+const LOAD_PRODUCT_SUCCESS = 'redux-example/product/LOAD_PRODUCT_SUCCESS';
+const LOAD_PRODUCT_FAIL = 'redux-example/product/LOAD_INF_FAIL';
 
 const initialState = {
-  loaded: false
+  loaded: false,
+  products: {}
 };
 
 export default function reducer(state = initialState, action = {}) {
   let newInfo = {};
   switch (action.type) {
-    case LOAD_INFO:
+    case LOAD_PRODUCT:
       return {
         ...state,
         loading: true
       };
-    case LOAD_INFO_SUCCESS:
-      // newProducts = {...(state.products), ...(action.data)};
+    case LOAD_PRODUCT_SUCCESS:
+      let newProducts = {...(state.products), ...(action.data)};
       return {
         ...state,
         loading: false,
         loaded: true,
-        products: action.data,
+        products: newProducts,
         loadInfoError: false,
         loadInfoErrorDesc: action.errorDescription
       };
-    case LOAD_INFO_FAIL:
+    case LOAD_PRODUCT_FAIL:
       return {
         ...state,
         loading: false,
@@ -47,7 +48,7 @@ export default function reducer(state = initialState, action = {}) {
  */
 export function loadInfo(path) {
   return {
-    types: [LOAD_INFO, LOAD_INFO_SUCCESS, LOAD_INFO_FAIL],
+    types: [LOAD_PRODUCT, LOAD_PRODUCT_SUCCESS, LOAD_PRODUCT_FAIL],
     promise: (client) => client.get(path ? API.PRODUCT_API_PATH + '/' + path : API.PRODUCT_API_PATH)
   };
 }

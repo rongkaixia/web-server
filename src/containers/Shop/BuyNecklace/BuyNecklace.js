@@ -11,7 +11,6 @@ import Button from 'react-bootstrap/lib/Button';
 import { routeActions } from 'react-router-redux';
 import * as productAction from 'redux/modules/product';
 
-
 // TODO: 增加错误展示界面，监听loadInfo的错误
 /* eslint-disable */ 
 @asyncConnect([{

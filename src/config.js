@@ -17,6 +17,7 @@ module.exports = Object.assign({
   captainHost: process.env.CAPTAIN_HOST || 'localhost',
   captainPort: process.env.CAPTAIN_PORT,
   captainApiPath: '/api/v1.0',
+  staticResourcePath: 'http://localhost:3000/dist',
   app: {
     title: 'jade-web-server',
     description: 'All the modern best practices in one example.',

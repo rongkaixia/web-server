@@ -27,8 +27,9 @@ export default class UserCenter extends Component {
   renderItem(item) {
       // <div className="col-md-3" style={{width:'250px', height:'180px'}}>
     const styles = require('./Necklace.scss');
-    const imagePath = require('../../../../static/diaozhui.png');
-    // const imagePath = require(item.hero_image);
+    // const imagePath = require('../../../../static/diaozhui.png');
+    const imagePath = item.images.hero_image;
+    console.log("imagePath: " + imagePath);
     return (
       <div className={styles.gridItem}>
         <div className="col-md-3">
@@ -37,9 +38,7 @@ export default class UserCenter extends Component {
           </a>
           <p>{item.name}</p>
           <span>
-            <a className="btn btn-success" href={"/shop/buy-necklace/" + item.id}>
-              购买
-            </a>
+              <Link className="btn btn-success" to={"/shop/buy-necklace/" + item.id}>购买</Link>
           </span>
         </div>
       </div>
