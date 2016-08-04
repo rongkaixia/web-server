@@ -4,8 +4,8 @@ const protocol = require('../../../lib/protocol/protocol_pb')
 
 export function queryProduct(id) {
   let tmp = {
-    id: "124fda405i2",
-    type: "neck",
+    id: "0000001",
+    type: "necklace",
     name: "经典 - 18k白金翡翠吊坠",
     type_name: "吊坠",
     brief_desc: ["精选心型18K翡翠吊坠", "18k白金、18k黄金", "吊坠大小 - 1.8cm * 0.5cm * 0.2cm"], // 简要描述，用于购买页展示
@@ -24,9 +24,12 @@ export function queryProduct(id) {
       banner: {} // banner图片，用于商品详细页面
     }
   }
-  if (id) {
-    return tmp;
-  }else {
-    return {necklaces: [tmp, tmp, tmp, tmp]}
-  }
+  let tmp2 = Object.assign({}, tmp);
+  tmp2.id="0000002";
+  let tmp3 = Object.assign({}, tmp);
+  tmp3.id="0000003";
+  let tmp4 = Object.assign({}, tmp);
+  tmp4.id="0000001";
+  tmp4.type="ring";
+  return [tmp, tmp2, tmp3, tmp4];
 }

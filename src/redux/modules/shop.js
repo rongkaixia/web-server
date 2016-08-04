@@ -18,12 +18,20 @@ export default function reducer(state = initialState, action = {}) {
         loading: true
       };
     case LOAD_PRODUCT_SUCCESS:
-      let newProducts = {...(state.products), ...(action.data)};
+      let products = state.products;
+      action.data.forEach((item) => {
+        let data = {};
+        data[item.id] = item;
+        if (products[item.type] === undefined) {
+          products[item.type] = {};
+        }
+        Object.assign(products[item.type], data);
+      })
       return {
         ...state,
         loading: false,
         loaded: true,
-        products: newProducts,
+        products: products,
         loadInfoError: false,
         loadInfoErrorDesc: action.errorDescription
       };

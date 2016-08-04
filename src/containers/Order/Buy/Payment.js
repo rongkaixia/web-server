@@ -10,7 +10,6 @@ import Button from 'react-bootstrap/lib/Button';
 import Tabs from 'react-bootstrap/lib/Tabs';
 import Tab from 'react-bootstrap/lib/Tab';
 import { routeActions } from 'react-router-redux';
-import * as productAction from 'redux/modules/product';
 import * as userAction from 'redux/modules/userInfo';
 import {AddressCard} from 'containers';
 
@@ -19,20 +18,14 @@ import {AddressCard} from 'containers';
 /* eslint-disable */ 
 @asyncConnect([{
   promise: ({store: {dispatch, getState}, helpers: {client}}) => {
-    return dispatch(productAction.loadNecklace());
-  }
-},{
-  promise: ({store: {dispatch, getState}, helpers: {client}}) => {
     return dispatch(userAction.loadInfo());
   }
 }])
-@connect((state => ({user: state.userInfo.user,
-                    necklaces: state.product.products.necklaces})),
+@connect((state => ({user: state.userInfo.user})),
         {redirectTo: routeActions.push})
 export default class UserCenter extends Component {
   static propTypes = {
     user: PropTypes.object,
-    necklaces: PropTypes.object,
     redirectTo: PropTypes.func.isRequired
   };
 
@@ -56,7 +49,7 @@ export default class UserCenter extends Component {
     );
   }
 
-  renderItem(item) {
+  renderItem() {
       // <div className="col-md-3" style={{width:'250px', height:'180px'}}>
     const {user} = this.props;
     const styles = require('./Payment.scss');
@@ -81,12 +74,7 @@ export default class UserCenter extends Component {
 
   render() {
     const styles = require('./Payment.scss');
-    const {necklaces} = this.props;
-    let item = necklaces[0];
-    let itemView = null;
-    if (item) {
-      itemView = this.renderItem(item);
-    }
+    let itemView = this.renderItem();
 
     return (
       <div className={'container'}>

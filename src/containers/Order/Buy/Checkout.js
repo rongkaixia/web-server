@@ -8,7 +8,7 @@ import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import Button from 'react-bootstrap/lib/Button';
 import { routeActions } from 'react-router-redux';
-import * as productAction from 'redux/modules/product';
+import * as shopAction from 'redux/modules/shop';
 import * as userAction from 'redux/modules/userInfo';
 import {AddressCard} from 'containers';
 
@@ -17,7 +17,7 @@ import {AddressCard} from 'containers';
 /* eslint-disable */ 
 @asyncConnect([{
   promise: ({store: {dispatch, getState}, helpers: {client}}) => {
-    return dispatch(productAction.loadNecklace());
+    return dispatch(shopAction.loadNecklace());
   }
 },{
   promise: ({store: {dispatch, getState}, helpers: {client}}) => {
@@ -25,12 +25,12 @@ import {AddressCard} from 'containers';
   }
 }])
 @connect((state => ({user: state.userInfo.user,
-                    necklaces: state.product.products.necklaces})),
+                    necklace: state.shop.products.necklace})),
         {redirectTo: routeActions.push})
 export default class UserCenter extends Component {
   static propTypes = {
     user: PropTypes.object,
-    necklaces: PropTypes.object,
+    necklace: PropTypes.object,
     redirectTo: PropTypes.func.isRequired
   };
 
@@ -140,8 +140,8 @@ export default class UserCenter extends Component {
 
   render() {
     const styles = require('./Checkout.scss');
-    const {necklaces} = this.props;
-    let item = necklaces[0];
+    const {necklace} = this.props;
+    let item = necklace[0];
     let itemView = null;
     if (item) {
       itemView = this.renderItem(item);

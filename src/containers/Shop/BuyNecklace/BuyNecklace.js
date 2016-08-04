@@ -9,20 +9,20 @@ import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import Button from 'react-bootstrap/lib/Button';
 import { routeActions } from 'react-router-redux';
-import * as productAction from 'redux/modules/product';
+import * as shopAction from 'redux/modules/shop';
 
 // TODO: 增加错误展示界面，监听loadInfo的错误
 /* eslint-disable */ 
 @asyncConnect([{
   promise: ({store: {dispatch, getState}, helpers: {client}}) => {
-    return dispatch(productAction.loadNecklace());
+    return dispatch(shopAction.loadNecklace());
   }
 }])
-@connect((state => ({necklaces: state.product.products.necklaces})),
+@connect((state => ({necklace: state.shop.products.necklace})),
         {redirectTo: routeActions.push})
 export default class UserCenter extends Component {
   static propTypes = {
-    necklaces: PropTypes.object,
+    necklace: PropTypes.object,
     redirectTo: PropTypes.func.isRequired
   };
 
@@ -79,8 +79,9 @@ export default class UserCenter extends Component {
 
   render() {
     const styles = require('./BuyNecklace.scss');
-    const {necklaces} = this.props;
-    let item = necklaces[0];
+    const {necklace, location} = this.props;
+    var id = location.pathname.split("/").reverse()[0]
+    let item = necklace[id];
     let itemView = null;
     if (item) {
       itemView = this.renderItem(item);

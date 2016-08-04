@@ -6,21 +6,21 @@ import { asyncConnect } from 'redux-async-connect';
 import {UserCenterLeftPanel} from 'containers';
 import Image from 'react-bootstrap/lib/Image';
 import { routeActions } from 'react-router-redux';
-import * as productAction from 'redux/modules/product';
+import * as shopAction from 'redux/modules/shop';
 
 
 // TODO: 增加错误展示界面，监听loadInfo的错误
 /* eslint-disable */ 
 @asyncConnect([{
   promise: ({store: {dispatch, getState}, helpers: {client}}) => {
-    return dispatch(productAction.loadNecklace());
+    return dispatch(shopAction.loadNecklace());
   }
 }])
-@connect((state => ({necklaces: state.product.products.necklaces})),
+@connect((state => ({necklace: state.shop.products.necklace})),
         {redirectTo: routeActions.push})
 export default class UserCenter extends Component {
   static propTypes = {
-    necklaces: PropTypes.object,
+    necklace: PropTypes.object,
     redirectTo: PropTypes.func.isRequired
   };
 
@@ -47,11 +47,12 @@ export default class UserCenter extends Component {
 
   render() {
     const styles = require('./Necklace.scss');
-    const {necklaces} = this.props;
-    let products = [];
-    if (necklaces) {
-      necklaces.forEach((item) => {
-        products.push(this.renderItem(item));;
+    const {necklace} = this.props;
+    let items = [];
+    if (necklace) {
+      Object.keys(necklace).forEach((id) => {
+        let item = necklace[id];
+        items.push(this.renderItem(item));;
       })
     }
 
@@ -59,7 +60,7 @@ export default class UserCenter extends Component {
       <div className={styles.necklacePage + ' container'}>
         <h1 className={styles.headline}>项链/吊坠</h1>
         <div className="container">
-          <ul>{products}</ul>
+          <ul>{items}</ul>
         </div>
       </div>
     );
