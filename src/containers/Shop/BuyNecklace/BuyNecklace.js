@@ -26,10 +26,20 @@ export default class UserCenter extends Component {
     redirectTo: PropTypes.func.isRequired
   };
 
-  renderChoice(item) {
+  renderChoice(choice) {
     const styles = require('./BuyNecklace.scss');
+    const option = choice.value.map((v) => {
+      return (
+        <Button bsSize="large">{v}</Button>
+      );
+    })
     return (
       <div>
+        <p className={styles.subTitle}>{choice.name}</p>
+        <ButtonToolbar>
+          {option}
+        </ButtonToolbar>
+        <p className={styles.chooseOptionComment}>{choice.comment}</p>
       </div>
     );
   }
@@ -37,11 +47,9 @@ export default class UserCenter extends Component {
       // <div className="col-md-3" style={{width:'250px', height:'180px'}}>
     const styles = require('./BuyNecklace.scss');
     const imagePath = require('../../../../static/diaozhui.png');
-    // const imagePath = require(item.hero_image);
-          // <ul className={styles.chooseOption}>
-          //   <li >18K白金</li>
-          //   <li>18K黄金</li>
-          // </ul>
+    const choices = item.choices.map((choice) => {
+      return this.renderChoice(choice);
+    })
     return (
       <div className={styles.gridItem + " container"}>
         <div className={styles.selectionImage}>
@@ -50,21 +58,8 @@ export default class UserCenter extends Component {
         <div className={styles.productSelectionArea}>
           <p className={styles.introductionTitle}>{item.name}</p>
           <p className={styles.introductionSummary}>{item.name}</p>
-          <p className={styles.subTitle}>{"1.选择材质"}</p>
-          <ButtonToolbar>
-            <Button bsSize="large">18K白金</Button>
-            <Button bsSize="large">18K黄金</Button>
-          </ButtonToolbar>
-          <p className={styles.chooseOptionComment}></p>
-          <p className={styles.subTitle}>{"2.选择手寸"}</p>
-          <ButtonToolbar>
-            <Button bsSize="large">11</Button>
-            <Button bsSize="large">12</Button>
-            <Button bsSize="large">13</Button>
-            <Button bsSize="large">14</Button>
-          </ButtonToolbar>
-          <p className={styles.chooseOptionComment}></p>
-          <p className={styles.subTitle}>{"3.选择数量"}</p>
+          {choices}
+          <p className={styles.subTitle}>{"选择数量"}</p>
           <ButtonGroup>
             <Button bsSize="large">-</Button>
             <Button bsSize="large">0</Button>

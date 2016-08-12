@@ -5,6 +5,7 @@ import CaptainClient from 'api/captain/CaptainClient';
 import API from 'api/api';
 import ErrorMessage from '../error';
 import Cookies from '../cookies';
+import Config from '../Config';
 // let protocol = require('protocol');
 const protocol = require('../../lib/protocol/protocol_pb');
 const captainClient = new CaptainClient();
@@ -31,7 +32,14 @@ let clearCookie = (req, res) => {
   if (req.cookies && req.cookies[Cookies.userID])
     res.clearCookie(Cookies.userID);
   if (req.cookies && (req.cookies[Cookies.loggedIn] == 'true' || req.cookies[Cookies.loggedIn] == true))
-    res.cookie(Cookies.loggedIn, false);
+    res.cookie(Cookies.loggedIn, false, { domain: '.' + Config.mainDomain});
+}
+
+let setCookie = (res, {username, token, userId}) => {
+  res.cookie(Cookies.username, username, { domain: '.' + Config.mainDomain});
+  res.cookie(Cookies.session, token, { domain: '.' + Config.mainDomain});
+  res.cookie(Cookies.userID, userId, { domain: '.' + Config.mainDomain});
+  res.cookie(Cookies.loggedIn, true, { domain: '.' + Config.mainDomain});
 }
 
 router.post(API.SIGNUP_API_PATH, (req, res) => {
@@ -58,10 +66,7 @@ router.post(API.SIGNUP_API_PATH, (req, res) => {
   	}else{
       let data = response.getSignupResponse().toObject();
   		result = {...result, ...errorMsg, ...{data:data}};
-      res.cookie(Cookies.username, data.username);
-      res.cookie(Cookies.session, data.token);
-      res.cookie(Cookies.userID, data.userId);
-      res.cookie(Cookies.loggedIn, true);
+      setCookie(res, {username: data.username, token: data.token, userId: data.userId});
   	}
   	console.log("send response: " + JSON.stringify(result));
   	res.json(result);
@@ -98,10 +103,7 @@ router.post(API.LOGIN_API_PATH, (req, res) => {
   	}else{
       let data = response.getLoginResponse().toObject();
   		result = {...result, ...errorMsg, ...{data:data}};
-      res.cookie(Cookies.username, data.username);
-      res.cookie(Cookies.session, data.token);
-      res.cookie(Cookies.userID, data.userId);
-      res.cookie(Cookies.loggedIn, true);
+      setCookie(res, {username: data.username, token: data.token, userId: data.userId});
   	}
   	console.log("send response: " + JSON.stringify(result));
   	res.json(result);

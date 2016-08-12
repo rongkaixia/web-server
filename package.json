@@ -127,6 +127,7 @@
     "multireducer": "^2.0.0",
     "piping": "^0.3.0",
     "pretty-error": "^1.2.0",
+    "protobufjs": "^5.0.1",
     "protocol-buffers": "^3.1.6",
     "react": "^0.14.2",
     "react-bootstrap": "^0.28.1",
