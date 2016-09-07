@@ -17,7 +17,6 @@ export function queryProduct(id) {
       {name: "大小", value: ["主石大小 1.8cm * 0.5cm * 0.2cm", "吊坠大小 1.8cm * 0.5cm * 0.2cm"]},
       {name: "重量", value: ["主石重量 0.018g", "吊坠总重量 1.02g"]}
     ], //参数
-    prices: 
     images: {
       hero_image: config.staticResourcePath + "/static/diaozhui.png", //商品主图，单张图片， 用于点击进入详情页或购买页面
       thumbnail: config.staticResourcePath + "/static/diaozhui80x80.jpg", //商品小图，用于订单中展示等
